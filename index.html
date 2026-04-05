@@ -4,15 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Stephan · Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Inter:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root {
-  --bg:#0C1520;--surface:#152030;--card:#1C2D40;--card2:#223548;
-  --border:#2A4060;--border2:#1E3050;--accent:#E8920A;--accent2:#FFAC30;
+  --bg:#000000;--surface:#0A0E14;--card:#111820;--card2:#1A2230;
+  --border:#1E2E42;--border2:#162030;--accent:#E8920A;--accent2:#FFAC30;
   --blue:#3D8EE8;--blue-dim:#2A6AB8;--green:#2ECC71;--red:#E74C3C;--purple:#8B5CF6;
-  --text:#EDF2F7;--text2:#94A3B8;--text3:#546882;
+  --text:#F0F4F8;--text2:#94A3B8;--text3:#546882;
   --r-sm:8px;--r-md:12px;--r-lg:18px;--r-xl:24px;
-  --shadow:0 4px 24px rgba(0,0,0,0.4);--font:'Inter',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --shadow:0 4px 24px rgba(0,0,0,0.6);
+  --font:'Inter',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --comic:'Bangers','Carter One',cursive;
+  --comic-shadow:-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 4px 4px 0 rgba(255,172,48,.6);
+  --comic-shadow-sm:-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 0 rgba(255,172,48,.5);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
@@ -21,92 +30,108 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative}
 .page-content{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:80px}
 
-/* TOP BAR */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border2);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+/* ====== COMIC TYPOGRAPHY ====== */
+.comic-title{font-family:var(--comic);text-shadow:var(--comic-shadow);letter-spacing:1.5px}
+.comic-num{font-family:var(--comic);text-shadow:var(--comic-shadow-sm);letter-spacing:1px}
+
+/* ====== NOISE TEXTURE OVERLAY ====== */
+.card::before{content:'';position:absolute;inset:0;border-radius:inherit;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;opacity:.6}
+
+/* ====== TOP BAR ====== */
+.topbar{background:var(--surface);border-bottom:3px solid var(--accent);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
 .topbar-brand{display:flex;align-items:center;gap:10px}
-.topbar-logo{width:34px;height:34px;border-radius:var(--r-sm);background:var(--accent);display:flex;align-items:center;justify-content:center}
+.topbar-logo{width:38px;height:38px;border-radius:var(--r-sm);background:var(--accent);display:flex;align-items:center;justify-content:center;border:3px solid #000;box-shadow:2px 2px 0 var(--accent2)}
 .topbar-logo svg{width:20px;height:20px}
-.topbar-title{font-size:17px;font-weight:700;letter-spacing:-0.3px;color:var(--text)}
+.topbar-title{font-family:var(--comic);font-size:22px;font-weight:700;letter-spacing:1px;color:var(--accent2);text-shadow:-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 3px 3px 0 rgba(0,0,0,.8)}
 .topbar-sub{font-size:11px;color:var(--text3);margin-top:-2px}
 .topbar-right{display:flex;gap:8px;align-items:center}
-.icon-btn{width:36px;height:36px;border-radius:var(--r-sm);background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
+.icon-btn{width:38px;height:38px;border-radius:var(--r-sm);background:var(--card);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;box-shadow:0 3px 0 var(--border)}
 .icon-btn:hover{background:var(--card2)}
+.icon-btn:active{box-shadow:none;transform:translateY(3px)}
 .icon-btn svg{width:18px;height:18px;stroke:var(--text2)}
 
-/* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border2);display:flex;padding:6px 0 max(6px,env(safe-area-inset-bottom));z-index:100}
+/* ====== BOTTOM NAV ====== */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:3px solid var(--accent);display:flex;padding:6px 0 max(6px,env(safe-area-inset-bottom));z-index:100}
 .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;cursor:pointer;position:relative;transition:all .15s}
 .nav-item svg{width:20px;height:20px;stroke:var(--text3);transition:stroke .15s}
 .nav-item span{font-size:9px;font-weight:500;color:var(--text3);transition:color .15s;letter-spacing:.3px}
 .nav-item.active svg{stroke:var(--accent)}
-.nav-item.active span{color:var(--accent)}
+.nav-item.active span{color:var(--accent);font-weight:700}
 .nav-dot{width:4px;height:4px;border-radius:99px;background:var(--accent);position:absolute;top:3px;opacity:0;transition:opacity .15s}
 .nav-item.active .nav-dot{opacity:1}
 
-/* MODULES */
+/* ====== MODULES ====== */
 .module{display:none;animation:fadeUp .2s ease}
 .module.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* SECTION HEADER */
+/* ====== SECTION HEADER ====== */
 .section-head{padding:20px 20px 0;display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
-.section-head h2{font-size:22px;font-weight:700;letter-spacing:-.4px;color:var(--text)}
+.section-head h2{font-family:var(--comic);font-size:28px;font-weight:700;letter-spacing:1px;color:var(--text);text-shadow:var(--comic-shadow)}
 .section-head p{font-size:12px;color:var(--text3);margin-top:2px}
-.chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--card);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s}
+.chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--card);border:2px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s}
 .chip:hover{background:var(--card2)}
 .chip.active{background:var(--accent);border-color:var(--accent);color:white}
 
-/* CARDS */
-.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r-lg);padding:18px;margin:0 16px 14px}
+/* ====== CARDS ====== */
+.card{position:relative;background:var(--card);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;margin:0 16px 14px;overflow:hidden}
 .card-sm{padding:14px;border-radius:var(--r-md)}
-.card-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.card-title{font-family:var(--comic);font-size:14px;font-weight:600;color:var(--accent2);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;text-shadow:-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000}
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:var(--r-md);border:none;cursor:pointer;font-family:var(--font);font-size:14px;font-weight:600;letter-spacing:.2px;transition:all .15s;text-decoration:none}
-.btn-primary{background:var(--accent);color:white}
-.btn-primary:hover{background:var(--accent2)}
-.btn-secondary{background:var(--card);border:1px solid var(--border);color:var(--text2)}
-.btn-secondary:hover{background:var(--card2)}
+/* ====== COMIC BUTTONS ====== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 20px;border-radius:var(--r-md);border:3px solid #000;cursor:pointer;font-family:var(--comic);font-size:16px;letter-spacing:1px;transition:all .1s;text-decoration:none;position:relative;text-transform:uppercase}
+.btn-primary{background:linear-gradient(180deg,#FFAC30 0%,#E8920A 100%);color:#000;box-shadow:0 5px 0 #B06E00,0 6px 8px rgba(0,0,0,.4)}
+.btn-primary:hover{background:linear-gradient(180deg,#FFB840 0%,#F0A020 100%)}
+.btn-primary:active{box-shadow:0 1px 0 #B06E00;transform:translateY(4px)}
+.btn-secondary{background:linear-gradient(180deg,#1A2A3E 0%,#111820 100%);border:3px solid var(--border);color:var(--text2);box-shadow:0 4px 0 #0A0E14,0 5px 6px rgba(0,0,0,.3)}
+.btn-secondary:hover{background:linear-gradient(180deg,#223548 0%,#1A2230 100%)}
+.btn-secondary:active{box-shadow:0 1px 0 #0A0E14;transform:translateY(3px)}
+.btn-blue{background:linear-gradient(180deg,#5BA8FF 0%,#3D8EE8 100%);color:#000;border-color:#1A5EB0;box-shadow:0 5px 0 #1A5EB0,0 6px 8px rgba(0,0,0,.4)}
+.btn-blue:active{box-shadow:0 1px 0 #1A5EB0;transform:translateY(4px)}
+.btn-green{background:linear-gradient(180deg,#4AE88A 0%,#2ECC71 100%);color:#000;border-color:#1A8A4A;box-shadow:0 5px 0 #1A8A4A,0 6px 8px rgba(0,0,0,.4)}
+.btn-green:active{box-shadow:0 1px 0 #1A8A4A;transform:translateY(4px)}
+.btn-red{background:linear-gradient(180deg,#FF6B5B 0%,#E74C3C 100%);color:#000;border-color:#A82020;box-shadow:0 5px 0 #A82020,0 6px 8px rgba(0,0,0,.4)}
+.btn-red:active{box-shadow:0 1px 0 #A82020;transform:translateY(4px)}
 .btn-block{width:100%}
 .btn svg{width:18px;height:18px}
 
-/* INPUTS */
+/* ====== INPUTS ====== */
 .input-group{margin-bottom:14px}
-.input-label{font-size:12px;font-weight:600;color:var(--text3);display:block;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
-.input,select.input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:11px 14px;color:var(--text);font-family:var(--font);font-size:15px;transition:border-color .15s;outline:none;appearance:none}
-.input:focus{border-color:var(--accent)}
+.input-label{font-family:var(--comic);font-size:12px;font-weight:600;color:var(--accent2);display:block;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+.input,select.input{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:var(--r-md);padding:11px 14px;color:var(--text);font-family:var(--font);font-size:15px;transition:border-color .15s;outline:none;appearance:none}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,146,10,.2)}
 .input::placeholder{color:var(--text3)}
 
-/* RING */
+/* ====== RING ====== */
 .ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center}
 .ring-label{position:absolute;text-align:center}
-.ring-num{font-size:26px;font-weight:700;color:var(--text);line-height:1;display:block}
+.ring-num{font-family:var(--comic);font-size:30px;font-weight:700;color:var(--accent2);line-height:1;display:block;text-shadow:var(--comic-shadow-sm)}
 .ring-unit{font-size:11px;color:var(--text3);display:block}
 
-/* MACROS */
+/* ====== MACROS ====== */
 .macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.macro-item{background:var(--surface);border-radius:var(--r-md);padding:12px}
+.macro-item{background:var(--surface);border-radius:var(--r-md);padding:12px;border:1px solid var(--border2)}
 .macro-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.macro-name{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px}
-.macro-val{font-size:16px;font-weight:700;color:var(--text)}
+.macro-name{font-family:var(--comic);font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.macro-val{font-family:var(--comic);font-size:20px;font-weight:700;color:var(--text);text-shadow:var(--comic-shadow-sm)}
 .macro-goal{font-size:10px;color:var(--text3)}
-.macro-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+.macro-bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;border:1px solid var(--border2)}
 .macro-fill{height:100%;border-radius:99px;transition:width .5s ease}
 .fill-protein{background:linear-gradient(90deg,#3D8EE8,#5BA8FF)}
 .fill-carbs{background:linear-gradient(90deg,#E8920A,#FFB030)}
 .fill-fat{background:linear-gradient(90deg,#E74C3C,#FF6B5B)}
 .fill-fiber{background:linear-gradient(90deg,#2ECC71,#4AE88A)}
 
-/* MEALS */
+/* ====== MEALS ====== */
 .meal-section{margin-bottom:20px}
-.meal-section-title{font-size:13px;font-weight:600;color:var(--text2);padding:0 20px 8px;display:flex;align-items:center;justify-content:space-between}
-.meal-section-cals{font-size:12px;color:var(--text3);font-family:var(--mono)}
+.meal-section-title{font-family:var(--comic);font-size:15px;font-weight:600;color:var(--text2);padding:0 20px 8px;display:flex;align-items:center;justify-content:space-between;letter-spacing:1px}
+.meal-section-cals{font-size:12px;color:var(--accent);font-family:var(--mono)}
 .meal-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--border2)}
-.meal-icon{width:40px;height:40px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--surface)}
+.meal-icon{width:40px;height:40px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--surface);border:2px solid var(--border)}
 .meal-info{flex:1;min-width:0}
 .meal-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meal-macros{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
-.meal-cals{font-size:15px;font-weight:700;color:var(--accent);font-family:var(--mono);white-space:nowrap}
+.meal-cals{font-family:var(--comic);font-size:18px;font-weight:700;color:var(--accent);white-space:nowrap;text-shadow:var(--comic-shadow-sm)}
 .meal-del{background:none;border:none;cursor:pointer;padding:4px;opacity:.5}
 .meal-del:hover{opacity:1}
 .meal-del svg{width:16px;height:16px;stroke:var(--red)}
@@ -114,26 +139,29 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .add-meal-btn:hover{color:var(--accent)}
 .add-meal-btn svg{width:18px;height:18px}
 
-/* FAB */
-.fab{position:fixed;bottom:90px;right:max(20px,calc((100vw - 480px)/2 + 16px));width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(232,146,10,.5);transition:transform .15s,box-shadow .15s;z-index:60}
-.fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(232,146,10,.6)}
+/* ====== FAB ====== */
+.fab{width:56px;height:56px;border-radius:50%;border:3px solid #000;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,box-shadow .12s;z-index:60}
+.fab-orange{background:linear-gradient(180deg,#FFAC30,#E8920A);box-shadow:0 5px 0 #B06E00,0 8px 20px rgba(232,146,10,.5)}
+.fab-blue{background:linear-gradient(180deg,#5BA8FF,#3D8EE8);box-shadow:0 5px 0 #1A5EB0,0 8px 20px rgba(61,142,232,.4)}
+.fab-green{background:linear-gradient(180deg,#4AE88A,#2ECC71);box-shadow:0 5px 0 #1A8A4A,0 8px 20px rgba(46,204,113,.4)}
+.fab:active{box-shadow:0 1px 0 rgba(0,0,0,.6);transform:translateY(4px)}
 .fab svg{width:26px;height:26px;stroke:white;stroke-width:2.5}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
+/* ====== MODAL ====== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:flex-end;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal-sheet{background:var(--surface);width:100%;max-width:480px;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:16px 20px max(24px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);max-height:90dvh;overflow-y:auto}
+.modal-sheet{background:var(--surface);width:100%;max-width:480px;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:16px 20px max(24px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);max-height:90dvh;overflow-y:auto;border:3px solid var(--accent);border-bottom:none}
 .modal-overlay.open .modal-sheet{transform:translateY(0)}
-.modal-handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:0 auto 18px}
-.modal-title{font-size:18px;font-weight:700;margin-bottom:18px;color:var(--text)}
+.modal-handle{width:40px;height:4px;background:var(--accent);border-radius:99px;margin:0 auto 18px}
+.modal-title{font-family:var(--comic);font-size:22px;font-weight:700;margin-bottom:18px;color:var(--accent2);text-shadow:var(--comic-shadow-sm);letter-spacing:1px}
 
-/* FOOD SEARCH */
+/* ====== FOOD SEARCH ====== */
 .search-wrap{position:relative;margin-bottom:14px}
-.search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px 12px 40px;color:var(--text);font-family:var(--font);font-size:15px;outline:none;transition:border-color .15s}
-.search-input:focus{border-color:var(--accent)}
+.search-input{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:var(--r-md);padding:12px 14px 12px 40px;color:var(--text);font-family:var(--font);font-size:15px;outline:none;transition:border-color .15s}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,146,10,.2)}
 .search-input::placeholder{color:var(--text3)}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:20px;height:20px;stroke:var(--text3)}
-.search-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);max-height:260px;overflow-y:auto;z-index:10;display:none}
+.search-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:2px solid var(--border);border-radius:var(--r-md);max-height:260px;overflow-y:auto;z-index:10;display:none}
 .search-results.show{display:block}
 .search-result-item{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background .1s}
 .search-result-item:hover{background:var(--card2)}
@@ -142,19 +170,20 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .sr-info{flex:1;min-width:0}
 .sr-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sr-detail{font-size:11px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
-.sr-cal{font-size:13px;font-weight:700;color:var(--accent);font-family:var(--mono);white-space:nowrap}
+.sr-cal{font-family:var(--comic);font-size:15px;font-weight:700;color:var(--accent);white-space:nowrap}
 .search-tabs{display:flex;gap:6px;margin-bottom:12px}
-.search-tab{flex:1;padding:8px;text-align:center;border-radius:var(--r-sm);background:var(--card);border:1px solid var(--border);color:var(--text3);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
-.search-tab.active{background:var(--accent);border-color:var(--accent);color:white}
+.search-tab{flex:1;padding:8px;text-align:center;border-radius:var(--r-sm);background:var(--card);border:2px solid var(--border);color:var(--text3);font-family:var(--comic);font-size:13px;font-weight:600;cursor:pointer;transition:all .12s;box-shadow:0 3px 0 rgba(0,0,0,.4);letter-spacing:.5px}
+.search-tab:active{box-shadow:none;transform:translateY(3px)}
+.search-tab.active{background:var(--accent);border-color:var(--accent);color:#000;box-shadow:0 3px 0 #B06E00}
 
-/* EXERCISE CARDS */
-.exercise-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r-lg);margin:0 16px 14px;overflow:hidden;transition:border-color .15s}
-.exercise-card.done{border-color:var(--green);opacity:.7}
+/* ====== EXERCISE CARDS ====== */
+.exercise-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r-lg);margin:0 16px 14px;overflow:hidden;transition:border-color .15s}
+.exercise-card.done{border-color:var(--green);box-shadow:0 0 12px rgba(46,204,113,.2)}
 .ex-body{padding:14px 16px}
-.ex-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ex-name{font-family:var(--comic);font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:.5px}
 .ex-equip{font-size:11px;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:4px}
 .ex-details{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.ex-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid var(--border)}
+.ex-chip{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;border:2px solid}
 .ex-chip.sets{background:rgba(61,142,232,.15);color:var(--blue);border-color:rgba(61,142,232,.3)}
 .ex-chip.reps{background:rgba(232,146,10,.15);color:var(--accent);border-color:rgba(232,146,10,.3)}
 .ex-chip.rest{background:rgba(139,92,246,.15);color:var(--purple);border-color:rgba(139,92,246,.3)}
@@ -166,39 +195,54 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .ex-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2)}
 .ex-check input[type="checkbox"]{accent-color:var(--green);width:18px;height:18px;cursor:pointer}
 .day-selector{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto}
-.day-btn{flex-shrink:0;padding:8px 16px;border-radius:var(--r-md);background:var(--card);border:1px solid var(--border);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
-.day-btn.active{background:var(--accent);border-color:var(--accent);color:white}
+.day-btn{flex-shrink:0;padding:8px 16px;border-radius:var(--r-md);background:var(--card);border:2px solid var(--border);color:var(--text2);font-family:var(--comic);font-size:14px;font-weight:600;cursor:pointer;transition:all .12s;box-shadow:0 3px 0 rgba(0,0,0,.3);letter-spacing:.5px}
+.day-btn:active{box-shadow:none;transform:translateY(3px)}
+.day-btn.active{background:var(--accent);border-color:var(--accent);color:#000;box-shadow:0 3px 0 #B06E00}
 
-/* EXPENSE */
+/* ====== EXPENSE ====== */
 .exp-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 16px 16px}
-.exp-sum-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r-md);padding:12px;text-align:center}
+.exp-sum-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;position:relative;overflow:hidden}
 .exp-sum-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
-.exp-sum-val{font-size:18px;font-weight:700;color:var(--text);font-family:var(--mono)}
+.exp-sum-val{font-family:var(--comic);font-size:20px;font-weight:700;color:var(--text);text-shadow:var(--comic-shadow-sm)}
 .exp-sum-val.accent{color:var(--accent)}
 .exp-sum-val.red{color:var(--red)}
 .exp-sum-val.green{color:var(--green)}
 .exp-list-item{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border2)}
-.exp-icon{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.exp-icon{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:2px solid var(--border)}
 .exp-info{flex:1}
 .exp-name{font-size:14px;font-weight:500;color:var(--text)}
 .exp-meta{font-size:11px;color:var(--text3);margin-top:2px}
-.exp-amount{font-size:16px;font-weight:700;font-family:var(--mono);white-space:nowrap}
+.exp-amount{font-family:var(--comic);font-size:18px;font-weight:700;white-space:nowrap}
 .exp-amount.neg{color:var(--red)}
 .exp-amount.pos{color:var(--green)}
 .cat-chips{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto}
-.cat-chip{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--text2)}
-.cat-chip.active{background:var(--accent);border-color:var(--accent);color:white}
+.cat-chip{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;background:var(--card);border:2px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;color:var(--text2);box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.cat-chip:active{box-shadow:none;transform:translateY(2px)}
+.cat-chip.active{background:var(--accent);border-color:var(--accent);color:#000}
 
-/* BAR CHART */
+/* ====== SUBSCRIPTION CARDS ====== */
+.sub-card{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:2px solid var(--border2);transition:all .2s}
+.sub-card.alert{background:rgba(231,76,60,.1);border-left:4px solid var(--red)}
+.sub-card.alert .sub-days{color:var(--red);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.sub-icon{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:2px solid var(--border);background:var(--surface)}
+.sub-info{flex:1}
+.sub-name{font-size:14px;font-weight:600;color:var(--text)}
+.sub-cycle{font-size:11px;color:var(--text3);margin-top:2px}
+.sub-right{text-align:right}
+.sub-amount{font-family:var(--comic);font-size:16px;font-weight:700;color:var(--accent)}
+.sub-days{font-size:11px;color:var(--text3);margin-top:2px;font-weight:600}
+
+/* ====== BAR CHART ====== */
 .bar-chart{display:flex;align-items:flex-end;gap:8px;height:80px;padding:0 4px}
 .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
 .bar{width:100%;border-radius:4px 4px 0 0;background:var(--blue-dim);transition:height .5s ease;min-height:4px}
 .bar.current{background:var(--accent)}
 .bar-label{font-size:9px;color:var(--text3)}
 
-/* TASKS */
+/* ====== TASKS ====== */
 .task-group{margin-bottom:8px}
-.task-group-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px;padding:0 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.task-group-title{font-family:var(--comic);font-size:13px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1.5px;padding:0 20px 8px;display:flex;align-items:center;justify-content:space-between}
 .task-item{display:flex;align-items:flex-start;gap:12px;padding:12px 20px;border-bottom:1px solid var(--border2);cursor:pointer;transition:background .1s}
 .task-item:hover{background:var(--surface)}
 .task-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);margin-top:1px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
@@ -210,84 +254,83 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .task-priority{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
 .priority-high{background:var(--red)}.priority-med{background:var(--accent)}.priority-low{background:var(--text3)}
 
-/* CALENDAR */
+/* ====== CALENDAR ====== */
 .mini-cal{padding:0 16px 20px}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-month{font-size:14px;font-weight:700;color:var(--text)}
+.cal-month{font-family:var(--comic);font-size:16px;font-weight:700;color:var(--text);letter-spacing:1px}
 .cal-nav{background:none;border:none;cursor:pointer;padding:4px}
 .cal-nav svg{width:18px;height:18px;stroke:var(--text3)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-day-name{font-size:10px;font-weight:600;color:var(--text3);text-align:center;padding:4px 0;text-transform:uppercase;letter-spacing:.5px}
 .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;border-radius:var(--r-sm);cursor:pointer;color:var(--text2);transition:background .1s}
 .cal-day:hover{background:var(--card)}
-.cal-day.today{background:var(--accent);color:white;font-weight:700}
+.cal-day.today{background:var(--accent);color:#000;font-weight:700;font-family:var(--comic)}
 .cal-day.other-month{color:var(--text3);opacity:.4}
 
-/* PHOTO */
-.photo-upload-area{border:2px dashed var(--border);border-radius:var(--r-lg);padding:32px;text-align:center;cursor:pointer;transition:border-color .15s;background:var(--surface)}
+/* ====== PHOTO & BARCODE ====== */
+.photo-upload-area{border:3px dashed var(--border);border-radius:var(--r-lg);padding:32px;text-align:center;cursor:pointer;transition:border-color .15s;background:var(--surface)}
 .photo-upload-area:hover{border-color:var(--accent)}
 .photo-upload-area svg{width:40px;height:40px;stroke:var(--text3);margin-bottom:10px}
 .photo-upload-area p{font-size:14px;color:var(--text2)}
 .photo-upload-area span{font-size:11px;color:var(--text3);display:block;margin-top:4px}
 #photo-preview{max-width:100%;border-radius:var(--r-md);margin:12px 0;display:none}
-.analysis-result{background:var(--surface);border-radius:var(--r-md);padding:14px;margin-top:12px;display:none}
+.analysis-result{background:var(--surface);border-radius:var(--r-md);padding:14px;margin-top:12px;display:none;border:2px solid var(--border)}
 .analysis-result-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2);font-size:13px}
 .analysis-result-item:last-child{border-bottom:none}
-.ar-label{color:var(--text2)}.ar-val{font-weight:700;color:var(--text);font-family:var(--mono)}
+.ar-label{color:var(--text2)}.ar-val{font-family:var(--comic);font-weight:700;color:var(--text)}
 .loading-spin{display:none;flex-direction:column;align-items:center;gap:10px;padding:20px;color:var(--text3);font-size:13px}
 .spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* STATS MODULE */
+/* ====== BARCODE SCANNER ====== */
+#barcode-reader{width:100%;border-radius:var(--r-md);overflow:hidden;margin-bottom:12px}
+#barcode-reader video{width:100%!important;border-radius:var(--r-md)}
+
+/* ====== STATS MODULE ====== */
 .stats-row{display:flex;gap:10px;padding:0 16px 16px}
-.stat-box{flex:1;background:var(--card);border:1px solid var(--border2);border-radius:var(--r-md);padding:12px;text-align:center}
-.stat-num{font-size:22px;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.stat-box{flex:1;background:var(--card);border:2px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center}
+.stat-num{font-family:var(--comic);font-size:26px;font-weight:700;color:var(--accent);text-shadow:var(--comic-shadow-sm)}
 .stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
 .mini-chart{height:60px;display:flex;align-items:flex-end;gap:3px;padding:8px 0}
 .mini-bar{flex:1;border-radius:3px 3px 0 0;transition:height .5s;min-height:2px}
-.deficit-indicator{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:var(--surface);border-radius:var(--r-md);margin-top:12px}
-.deficit-val{font-size:20px;font-weight:700;font-family:var(--mono)}
+.deficit-indicator{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:var(--surface);border-radius:var(--r-md);margin-top:12px;border:2px solid var(--border)}
+.deficit-val{font-family:var(--comic);font-size:24px;font-weight:700;text-shadow:var(--comic-shadow-sm)}
 .deficit-label{font-size:12px;color:var(--text3)}
 
-/* EXERCISE INPUT */
-.ex-input-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.ex-input-sm{flex:1;min-width:80px}
-.ex-input-sm .input{padding:9px 10px;font-size:13px;text-align:center}
-.ex-input-sm .input-label{font-size:10px;margin-bottom:4px}
-
-/* GOAL AREA */
+/* ====== GOAL AREA ====== */
 .goal-area{display:flex;align-items:center;gap:20px}
 .goal-legend{display:flex;flex-direction:column;gap:8px}
 .legend-item{display:flex;align-items:center;gap:8px}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 .legend-text{font-size:12px;color:var(--text2)}
-.legend-val{font-size:12px;font-weight:700;color:var(--text);font-family:var(--mono)}
+.legend-val{font-family:var(--comic);font-size:14px;font-weight:700;color:var(--text);text-shadow:var(--comic-shadow-sm)}
 
-/* TOAST */
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card2);color:var(--text);font-size:13px;font-weight:500;padding:10px 20px;border-radius:99px;border:1px solid var(--border);z-index:300;opacity:0;transition:all .25s;white-space:nowrap;max-width:calc(100vw - 40px);text-align:center}
+/* ====== TOAST ====== */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card2);color:var(--text);font-family:var(--comic);font-size:15px;font-weight:500;padding:10px 20px;border-radius:99px;border:3px solid var(--accent);z-index:300;opacity:0;transition:all .25s;white-space:nowrap;max-width:calc(100vw - 40px);text-align:center;letter-spacing:.5px;box-shadow:0 4px 0 #B06E00}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* SETTINGS */
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border2)}
-.setting-info .setting-name{font-size:14px;font-weight:500;color:var(--text)}
-.setting-info .setting-desc{font-size:11px;color:var(--text3);margin-top:2px}
-
-/* SYNC BADGE */
-.sync-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:3px 8px;border-radius:99px;font-weight:600}
-.sync-badge.synced{background:rgba(46,204,113,.15);color:var(--green)}
-.sync-badge.local{background:rgba(232,146,10,.15);color:var(--accent)}
-
-/* UTILS */
-.divider{height:1px;background:var(--border2);margin:8px 0}
+/* ====== UTILS ====== */
+.divider{height:2px;background:var(--border2);margin:8px 0}
 .px-4{padding:0 16px}
 .text-sm{font-size:13px}.text-xs{font-size:11px}.text-muted{color:var(--text3)}.text-accent{color:var(--accent)}.text-green{color:var(--green)}.font-bold{font-weight:700}
-
-/* INLINE SVG CHART */
 .svg-chart{width:100%;overflow:visible}
+
+/* ====== INSTALL BANNER ====== */
+.install-banner{display:none;padding:12px 20px;background:linear-gradient(90deg,rgba(232,146,10,.15),rgba(61,142,232,.1));border-bottom:2px solid var(--accent);align-items:center;gap:12px}
+.install-banner.show{display:flex}
+.install-banner-text{flex:1;font-size:13px;color:var(--text2)}
+.install-banner-text strong{color:var(--accent2);font-family:var(--comic)}
 </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- INSTALL PWA BANNER -->
+  <div class="install-banner" id="install-banner">
+    <span class="install-banner-text"><strong>Instalar App</strong> — Úsala como app nativa</span>
+    <button class="btn btn-primary" style="padding:6px 14px;font-size:12px" onclick="installPWA()">Instalar</button>
+    <button style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" onclick="dismissInstall()">✕</button>
+  </div>
 
   <!-- TOP BAR -->
   <div class="topbar">
@@ -299,7 +342,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         </svg>
       </div>
       <div>
-        <div class="topbar-title">Stephan</div>
+        <div class="topbar-title">STEPHAN</div>
         <div class="topbar-sub" id="topbar-date">Cargando...</div>
       </div>
     </div>
@@ -357,10 +400,13 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       <div id="meals-list"></div>
       <!-- FABs -->
       <div style="position:fixed;bottom:90px;right:max(20px,calc((100vw - 480px)/2 + 16px));display:flex;flex-direction:column;gap:10px;z-index:60" id="nutrition-fabs">
-        <button class="fab" style="position:static;width:48px;height:48px;background:var(--blue);box-shadow:0 4px 16px rgba(61,142,232,.5)" onclick="openFoodSearchModal()" title="Buscar alimento">
+        <button class="fab fab-green" style="position:static;width:48px;height:48px" onclick="openBarcodeModal()" title="Escanear código de barras">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" style="width:22px;height:22px"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><line x1="7" y1="8" x2="7" y2="16"/><line x1="11" y1="8" x2="11" y2="16"/><line x1="15" y1="8" x2="15" y2="16"/><line x1="17" y1="8" x2="17" y2="16"/></svg>
+        </button>
+        <button class="fab fab-blue" style="position:static;width:48px;height:48px" onclick="openFoodSearchModal()" title="Buscar alimento">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
-        <button class="fab" style="position:static" onclick="openPhotoModal()" title="Foto de comida">
+        <button class="fab fab-orange" style="position:static" onclick="openPhotoModal()" title="Foto de comida">
           <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
           </svg>
@@ -381,28 +427,26 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <button class="day-btn" onclick="setWorkoutDay(this,'D')">Día D — Hombros</button>
         <button class="day-btn" onclick="setWorkoutDay(this,'R')">Descanso</button>
       </div>
-      <!-- Exercise stats -->
       <div class="stats-row">
         <div class="stat-box"><div class="stat-num" id="ex-done-count">0</div><div class="stat-label">Hechos</div></div>
         <div class="stat-box"><div class="stat-num" id="ex-total-count">0</div><div class="stat-label">Total</div></div>
         <div class="stat-box"><div class="stat-num" id="ex-pct">0%</div><div class="stat-label">Progreso</div></div>
       </div>
-      <!-- Calorie counter card -->
       <div class="card card-sm">
         <div class="card-title">🔥 Calorías Quemadas Hoy</div>
         <div style="display:flex;align-items:center;gap:16px">
           <div style="text-align:center;flex:1">
-            <div style="font-size:32px;font-weight:700;color:var(--green);font-family:var(--mono)" id="ex-kcal-total">0</div>
+            <div class="comic-num" style="font-size:36px;color:var(--green)" id="ex-kcal-total">0</div>
             <div style="font-size:11px;color:var(--text3)">kcal quemadas</div>
           </div>
-          <div style="height:50px;width:1px;background:var(--border2)"></div>
+          <div style="height:50px;width:2px;background:var(--border2)"></div>
           <div style="display:flex;flex-direction:column;gap:6px;flex:1">
             <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text3)">Pasos</span><span style="font-weight:700;color:var(--text);font-family:var(--mono)" id="ex-steps">0</span></div>
             <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text3)">Km</span><span style="font-weight:700;color:var(--text);font-family:var(--mono)" id="ex-km">0.0</span></div>
             <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--text3)">Minutos</span><span style="font-weight:700;color:var(--text);font-family:var(--mono)" id="ex-mins">0</span></div>
           </div>
         </div>
-        <button class="btn btn-secondary btn-block" style="margin-top:12px;font-size:12px" onclick="openExInputModal()">+ Registrar actividad</button>
+        <button class="btn btn-secondary btn-block" style="margin-top:12px;font-size:13px" onclick="openExInputModal()">+ Registrar actividad</button>
       </div>
       <div id="exercise-list"></div>
     </div>
@@ -411,11 +455,19 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
     <div class="module" id="mod-gastos">
       <div class="section-head" style="padding-bottom:16px">
         <div><h2>Gastos</h2><p id="exp-date-label">Hoy</p></div>
-        <button class="btn btn-primary" style="padding:8px 16px;font-size:13px" onclick="openExpModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Agregar
-        </button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-blue" style="padding:8px 12px;font-size:12px" onclick="openSubModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" width="14" height="14"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Subs
+          </button>
+          <button class="btn btn-primary" style="padding:8px 16px;font-size:13px" onclick="openExpModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar
+          </button>
+        </div>
       </div>
+      <!-- Subscription alerts -->
+      <div id="sub-alerts" style="padding:0 16px 12px"></div>
       <div class="exp-summary" style="grid-template-columns:1fr 1fr">
         <div class="exp-sum-card"><div class="exp-sum-label">Gastado hoy</div><div class="exp-sum-val red" id="exp-today">$0</div></div>
         <div class="exp-sum-card"><div class="exp-sum-label">Mes</div><div class="exp-sum-val" id="exp-month">$0</div></div>
@@ -431,6 +483,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <div class="cat-chip" onclick="filterCat(this,'transporte')">🚗 Transporte</div>
         <div class="cat-chip" onclick="filterCat(this,'salud')">💊 Salud/Gym</div>
         <div class="cat-chip" onclick="filterCat(this,'estudio')">📚 Estudio</div>
+        <div class="cat-chip" onclick="filterCat(this,'suscripcion')">📺 Suscripciones</div>
         <div class="cat-chip" onclick="filterCat(this,'otros')">📦 Otros</div>
       </div>
       <div class="card card-sm">
@@ -447,17 +500,15 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       <div class="section-head" style="padding-bottom:16px">
         <div><h2>Estadísticas</h2><p>Análisis y tendencias</p></div>
       </div>
-      <!-- Sub-tabs -->
       <div class="search-tabs" style="padding:0 16px 16px">
         <div class="search-tab active" onclick="switchStatTab(this,'stat-nutri')">🍽 Nutrición</div>
         <div class="search-tab" onclick="switchStatTab(this,'stat-exercise')">💪 Ejercicio</div>
         <div class="search-tab" onclick="switchStatTab(this,'stat-money')">💰 Gastos</div>
       </div>
-      <!-- Nutrition stats -->
       <div id="stat-nutri" class="stat-panel">
         <div class="card card-sm">
           <div class="card-title">Calorías últimos 7 días</div>
-          <div id="nutri-week-chart" style="height:100px;display:flex;align-items:flex-end;gap:4px;padding-top:8px"></div>
+          <div id="nutri-week-chart" style="height:100px;display:flex;align-items:flex-end;gap:4px;padding-top:8px;position:relative"></div>
         </div>
         <div class="card card-sm">
           <div class="card-title">Balance calórico hoy</div>
@@ -468,9 +519,9 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
-            <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--accent);font-family:var(--mono)" id="stat-consumed">0</div><div style="font-size:10px;color:var(--text3)">Consumido</div></div>
-            <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--green);font-family:var(--mono)" id="stat-burned">0</div><div style="font-size:10px;color:var(--text3)">Quemado</div></div>
-            <div style="text-align:center"><div style="font-size:18px;font-weight:700;color:var(--blue);font-family:var(--mono)" id="stat-net">0</div><div style="font-size:10px;color:var(--text3)">Neto</div></div>
+            <div style="text-align:center"><div class="comic-num" style="font-size:20px;color:var(--accent)" id="stat-consumed">0</div><div style="font-size:10px;color:var(--text3)">Consumido</div></div>
+            <div style="text-align:center"><div class="comic-num" style="font-size:20px;color:var(--green)" id="stat-burned">0</div><div style="font-size:10px;color:var(--text3)">Quemado</div></div>
+            <div style="text-align:center"><div class="comic-num" style="font-size:20px;color:var(--blue)" id="stat-net">0</div><div style="font-size:10px;color:var(--text3)">Neto</div></div>
           </div>
         </div>
         <div class="card card-sm">
@@ -478,7 +529,6 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
           <div id="macro-pie" style="display:flex;align-items:center;gap:16px;justify-content:center"></div>
         </div>
       </div>
-      <!-- Exercise stats -->
       <div id="stat-exercise" class="stat-panel" style="display:none">
         <div class="card card-sm">
           <div class="card-title">Actividad últimos 7 días</div>
@@ -487,10 +537,10 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <div class="card card-sm">
           <div class="card-title">Resumen del período</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div style="text-align:center;padding:10px"><div style="font-size:24px;font-weight:700;color:var(--green);font-family:var(--mono)" id="stat-total-kcal">0</div><div style="font-size:10px;color:var(--text3)">kcal quemadas (semana)</div></div>
-            <div style="text-align:center;padding:10px"><div style="font-size:24px;font-weight:700;color:var(--blue);font-family:var(--mono)" id="stat-total-steps">0</div><div style="font-size:10px;color:var(--text3)">pasos (semana)</div></div>
-            <div style="text-align:center;padding:10px"><div style="font-size:24px;font-weight:700;color:var(--accent);font-family:var(--mono)" id="stat-total-km">0</div><div style="font-size:10px;color:var(--text3)">km recorridos</div></div>
-            <div style="text-align:center;padding:10px"><div style="font-size:24px;font-weight:700;color:var(--purple);font-family:var(--mono)" id="stat-total-mins">0</div><div style="font-size:10px;color:var(--text3)">minutos activo</div></div>
+            <div style="text-align:center;padding:10px"><div class="comic-num" style="font-size:28px;color:var(--green)" id="stat-total-kcal">0</div><div style="font-size:10px;color:var(--text3)">kcal quemadas (semana)</div></div>
+            <div style="text-align:center;padding:10px"><div class="comic-num" style="font-size:28px;color:var(--blue)" id="stat-total-steps">0</div><div style="font-size:10px;color:var(--text3)">pasos (semana)</div></div>
+            <div style="text-align:center;padding:10px"><div class="comic-num" style="font-size:28px;color:var(--accent)" id="stat-total-km">0</div><div style="font-size:10px;color:var(--text3)">km recorridos</div></div>
+            <div style="text-align:center;padding:10px"><div class="comic-num" style="font-size:28px;color:var(--purple)" id="stat-total-mins">0</div><div style="font-size:10px;color:var(--text3)">minutos activo</div></div>
           </div>
         </div>
         <div class="card card-sm">
@@ -498,7 +548,6 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
           <div id="ex-recommendation" style="font-size:13px;color:var(--text2);line-height:1.6"></div>
         </div>
       </div>
-      <!-- Money stats -->
       <div id="stat-money" class="stat-panel" style="display:none">
         <div class="card card-sm">
           <div class="card-title">Gastos últimos 7 días</div>
@@ -511,7 +560,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <div class="card card-sm">
           <div class="card-title">Ahorro mensual</div>
           <div style="text-align:center;padding:12px">
-            <div style="font-size:28px;font-weight:700;color:var(--green);font-family:var(--mono)" id="stat-monthly-saved">$0</div>
+            <div class="comic-num" style="font-size:32px;color:var(--green)" id="stat-monthly-saved">$0</div>
             <div style="font-size:11px;color:var(--text3);margin-top:4px">ahorro estimado este mes</div>
           </div>
         </div>
@@ -523,7 +572,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       <div class="section-head" style="padding-bottom:16px">
         <div><h2>Mi Agenda</h2><p id="agenda-greeting"></p></div>
         <button class="btn btn-primary" style="padding:8px 16px;font-size:13px" onclick="openTaskModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Nueva
         </button>
       </div>
@@ -534,9 +583,9 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       </div>
       <div class="mini-cal">
         <div class="cal-header">
-          <button class="cal-nav" onclick="calNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="cal-nav" onclick="calNav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
           <span class="cal-month" id="cal-month-label">Abril 2026</span>
-          <button class="cal-nav" onclick="calNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <button class="cal-nav" onclick="calNav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
         </div>
         <div class="cal-grid" id="cal-grid"></div>
       </div>
@@ -581,7 +630,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 <div class="modal-overlay" id="food-search-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Buscar alimento</div>
+    <div class="modal-title">🔍 Buscar Alimento</div>
     <div class="search-tabs">
       <div class="search-tab active" onclick="switchSearchTab(this,'products')">🏷 Productos</div>
       <div class="search-tab" onclick="switchSearchTab(this,'dishes')">🍽 Platos</div>
@@ -606,7 +655,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       <div class="card card-sm" style="margin:0 0 14px;background:var(--card)">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <span style="font-size:14px;font-weight:600;color:var(--text)" id="fs-sel-name">—</span>
-          <span style="font-size:16px;font-weight:700;color:var(--accent);font-family:var(--mono)" id="fs-sel-cal">0 kcal</span>
+          <span class="comic-num" style="font-size:20px;color:var(--accent)" id="fs-sel-cal">0 kcal</span>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;font-size:11px;text-align:center">
           <div><div style="color:var(--blue);font-weight:700;font-family:var(--mono)" id="fs-sel-p">0g</div><div style="color:var(--text3)">Prot</div></div>
@@ -619,6 +668,54 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <button class="btn btn-secondary" style="flex:1" onclick="closeModal('food-search-modal')">Cancelar</button>
         <button class="btn btn-primary" style="flex:2" onclick="addSearchedFood()">Agregar</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Barcode Scanner Modal -->
+<div class="modal-overlay" id="barcode-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📷 Escanear Código de Barras</div>
+    <div id="barcode-reader"></div>
+    <div class="loading-spin" id="barcode-loading"><div class="spin"></div><span>Buscando producto en Open Food Facts...</span></div>
+    <div id="barcode-result" style="display:none">
+      <div class="card card-sm" style="margin:0 0 14px;background:var(--card)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:14px;font-weight:600;color:var(--text)" id="bc-name">—</span>
+          <span class="comic-num" style="font-size:20px;color:var(--accent)" id="bc-cal">0 kcal</span>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px" id="bc-brand"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;font-size:11px;text-align:center">
+          <div><div style="color:var(--blue);font-weight:700;font-family:var(--mono)" id="bc-p">0g</div><div style="color:var(--text3)">Prot</div></div>
+          <div><div style="color:var(--accent);font-weight:700;font-family:var(--mono)" id="bc-c">0g</div><div style="color:var(--text3)">Carbs</div></div>
+          <div><div style="color:var(--red);font-weight:700;font-family:var(--mono)" id="bc-f">0g</div><div style="color:var(--text3)">Grasas</div></div>
+          <div><div style="color:var(--green);font-weight:700;font-family:var(--mono)" id="bc-fb">0g</div><div style="color:var(--text3)">Fibra</div></div>
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Momento del día</label>
+        <select class="input" id="bc-time">
+          <option value="desayuno">Desayuno</option><option value="almuerzo" selected>Almuerzo</option>
+          <option value="once">Once / Merienda</option><option value="cena">Cena</option><option value="snack">Snack</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" style="flex:1" onclick="resetBarcode()">Escanear otro</button>
+        <button class="btn btn-green" style="flex:2" onclick="addBarcodeFood()">Agregar</button>
+      </div>
+    </div>
+    <div id="barcode-error" style="display:none;text-align:center;padding:16px">
+      <div style="font-size:36px;margin-bottom:8px">❌</div>
+      <div style="font-size:14px;color:var(--red);margin-bottom:4px" id="bc-error-msg">Producto no encontrado</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Intenta con otro producto o búscalo manualmente</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" style="flex:1" onclick="resetBarcode()">Reintentar</button>
+        <button class="btn btn-blue" style="flex:1" onclick="closeModal('barcode-modal');openFoodSearchModal()">Buscar manual</button>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px" id="barcode-close-btn">
+      <button class="btn btn-secondary btn-block" onclick="closeBarcodeModal()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -685,11 +782,11 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 <div class="modal-overlay" id="exp-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Registrar gasto</div>
+    <div class="modal-title">💸 Registrar Gasto</div>
     <div class="input-group"><label class="input-label">Descripción</label><input class="input" type="text" id="exp-desc-input" placeholder="Ej: Almuerzo, café, transporte..."></div>
     <div class="input-group"><label class="input-label">Monto (CLP $)</label><input class="input" type="number" id="exp-amount-input" placeholder="1500"></div>
     <div class="input-group"><label class="input-label">Categoría</label>
-      <select class="input" id="exp-cat-input"><option value="alimentacion">🍽 Alimentación</option><option value="transporte">🚗 Transporte</option><option value="salud">💊 Salud / Gym</option><option value="estudio">📚 Estudio</option><option value="otros">📦 Otros</option></select>
+      <select class="input" id="exp-cat-input"><option value="alimentacion">🍽 Alimentación</option><option value="transporte">🚗 Transporte</option><option value="salud">💊 Salud / Gym</option><option value="estudio">📚 Estudio</option><option value="suscripcion">📺 Suscripciones</option><option value="otros">📦 Otros</option></select>
     </div>
     <div style="display:flex;gap:10px;margin-top:6px">
       <button class="btn btn-secondary" style="flex:1" onclick="closeModal('exp-modal')">Cancelar</button>
@@ -698,11 +795,32 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
   </div>
 </div>
 
+<!-- Subscription Modal -->
+<div class="modal-overlay" id="sub-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📺 Suscripciones</div>
+    <div class="input-group"><label class="input-label">Servicio</label><input class="input" type="text" id="sub-name-input" placeholder="Ej: Netflix, Spotify, Gym..."></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="input-group"><label class="input-label">Monto ($)</label><input class="input" type="number" id="sub-amount-input" placeholder="6990"></div>
+      <div class="input-group"><label class="input-label">Día de cobro</label><input class="input" type="number" id="sub-day-input" placeholder="15" min="1" max="31"></div>
+    </div>
+    <div class="input-group"><label class="input-label">Ícono (emoji)</label><input class="input" type="text" id="sub-icon-input" placeholder="📺" maxlength="2"></div>
+    <div style="display:flex;gap:10px;margin-top:6px">
+      <button class="btn btn-secondary" style="flex:1" onclick="closeModal('sub-modal')">Cerrar</button>
+      <button class="btn btn-green" style="flex:2" onclick="saveSub()">Agregar</button>
+    </div>
+    <div class="divider" style="margin-top:16px"></div>
+    <div class="card-title" style="margin-top:8px">Suscripciones activas</div>
+    <div id="sub-list"></div>
+  </div>
+</div>
+
 <!-- Exercise Input Modal -->
 <div class="modal-overlay" id="ex-input-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Registrar actividad</div>
+    <div class="modal-title">🏃 Registrar Actividad</div>
     <div class="input-group"><label class="input-label">Tipo de actividad</label>
       <select class="input" id="ex-act-type">
         <option value="caminar">🚶 Caminar</option><option value="correr">🏃 Correr</option><option value="bicicleta">🚴 Bicicleta</option>
@@ -726,7 +844,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 <div class="modal-overlay" id="task-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">Nueva tarea</div>
+    <div class="modal-title">✅ Nueva Tarea</div>
     <div class="input-group"><label class="input-label">Título</label><input class="input" type="text" id="task-title-input" placeholder="Ej: Revisar módulo 3 ENEB"></div>
     <div class="input-group"><label class="input-label">Detalle (opcional)</label><input class="input" type="text" id="task-desc-input" placeholder="Notas adicionales..."></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -749,14 +867,14 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-sheet" style="padding-top:20px">
     <div class="modal-handle"></div>
-    <div class="modal-title">Configuración</div>
+    <div class="modal-title">⚙️ Configuración</div>
     <div class="input-group">
       <label class="input-label">API Key de Anthropic</label>
       <input class="input" type="password" id="api-key-input" placeholder="sk-ant-...">
       <p style="font-size:11px;color:var(--text3);margin-top:6px">Para análisis de fotos con IA</p>
     </div>
     <div class="divider"></div>
-    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Objetivos</div>
+    <div class="card-title" style="margin-bottom:12px">Objetivos</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="input-group"><label class="input-label">Calorías/día</label><input class="input" type="number" id="goal-cal-input" placeholder="2200"></div>
       <div class="input-group"><label class="input-label">Proteína (g)</label><input class="input" type="number" id="goal-protein-input" placeholder="160"></div>
@@ -764,14 +882,14 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       <div class="input-group"><label class="input-label">Grasas (g)</label><input class="input" type="number" id="goal-fat-input" placeholder="70"></div>
     </div>
     <div class="divider"></div>
-    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Presupuesto mensual</div>
+    <div class="card-title" style="margin-bottom:12px">Presupuesto mensual</div>
     <div class="input-group"><label class="input-label">Presupuesto (CLP $)</label><input class="input" type="number" id="goal-budget-input" placeholder="500000"></div>
     <div style="display:flex;gap:10px;margin-top:6px">
       <button class="btn btn-secondary" style="flex:1" onclick="closeModal('settings-modal')">Cerrar</button>
       <button class="btn btn-primary" style="flex:2" onclick="saveSettings()">Guardar</button>
     </div>
     <div class="divider" style="margin-top:16px"></div>
-    <button class="btn btn-secondary btn-block" style="margin-top:12px;color:var(--red);border-color:var(--red)" onclick="clearDayData()">Limpiar datos del día</button>
+    <button class="btn btn-red btn-block" style="margin-top:12px" onclick="clearDayData()">Limpiar datos del día</button>
   </div>
 </div>
 
@@ -794,21 +912,22 @@ const state = {
   meals: load(`sa_meals_${todayKey()}`, []),
   expenses: load('sa_expenses', []),
   tasks: load('sa_tasks', []),
+  subscriptions: load('sa_subs', []),
   workoutDay: load('sa_wday', 'A'),
   completedEx: load(`sa_ex_${todayKey()}`, []),
   activities: load(`sa_activities_${todayKey()}`, []),
   pendingMeal: null,
   selectedFood: null,
+  barcodeFood: null,
   searchTab: 'products',
   calOffset: 0,
 };
 
 // ═══════════════════════════════════════════════════════════════
-// CHILEAN FOOD DATABASE (Products + Dishes)
+// CHILEAN FOOD DATABASE
 // ═══════════════════════════════════════════════════════════════
 const foodDB = {
   products: [
-    // Lácteos
     {name:'Yoghurt Protein Soprole',brand:'Soprole',icon:'🥛',portion:'170g',cal:100,protein:15,carbs:8,fat:0.5,fiber:0},
     {name:'Yoghurt Griego Soprole',brand:'Soprole',icon:'🥛',portion:'110g',cal:90,protein:8,carbs:10,fat:2,fiber:0},
     {name:'Yoghurt Batido Colun',brand:'Colun',icon:'🥛',portion:'165g',cal:135,protein:5,carbs:22,fat:3,fiber:0},
@@ -819,26 +938,22 @@ const foodDB = {
     {name:'Queso Chanco',brand:'Genérico',icon:'🧀',portion:'30g',cal:98,protein:6.5,carbs:0.5,fat:8,fiber:0},
     {name:'Quesillo',brand:'Genérico',icon:'🧀',portion:'50g',cal:45,protein:8,carbs:1,fat:0.8,fiber:0},
     {name:'Manjar Colun',brand:'Colun',icon:'🍯',portion:'20g',cal:64,protein:1.4,carbs:11,fat:1.6,fiber:0},
-    // Bebidas energéticas
     {name:'Monster Energy Ultra Paradise',brand:'Monster',icon:'🥫',portion:'473ml',cal:10,protein:0,carbs:2,fat:0,fiber:0},
     {name:'Monster Energy Original',brand:'Monster',icon:'🥫',portion:'473ml',cal:210,protein:0,carbs:54,fat:0,fiber:0},
     {name:'Monster Energy Ultra White',brand:'Monster',icon:'🥫',portion:'473ml',cal:10,protein:0,carbs:2,fat:0,fiber:0},
     {name:'Red Bull',brand:'Red Bull',icon:'🥫',portion:'250ml',cal:112,protein:0,carbs:28,fat:0,fiber:0},
     {name:'Red Bull Sugar Free',brand:'Red Bull',icon:'🥫',portion:'250ml',cal:5,protein:0,carbs:0,fat:0,fiber:0},
     {name:'Reign Energy',brand:'Reign',icon:'🥫',portion:'473ml',cal:10,protein:0,carbs:3,fat:0,fiber:0},
-    // Bebidas
     {name:'Coca-Cola Original',brand:'Coca-Cola',icon:'🥤',portion:'350ml',cal:140,protein:0,carbs:39,fat:0,fiber:0},
     {name:'Coca-Cola Zero',brand:'Coca-Cola',icon:'🥤',portion:'350ml',cal:0,protein:0,carbs:0,fat:0,fiber:0},
     {name:'Agua Mineral Cachantun',brand:'Cachantun',icon:'💧',portion:'500ml',cal:0,protein:0,carbs:0,fat:0,fiber:0},
     {name:'Jugo Néctar Andina Naranja',brand:'Andina',icon:'🧃',portion:'200ml',cal:86,protein:0.4,carbs:21,fat:0,fiber:0},
-    // Pan y cereales
     {name:'Pan de Molde Ideal Blanco',brand:'Ideal',icon:'🍞',portion:'2 rebanadas (56g)',cal:148,protein:5,carbs:28,fat:1.8,fiber:1.5},
     {name:'Pan de Molde Integral Ideal',brand:'Ideal',icon:'🍞',portion:'2 rebanadas (56g)',cal:136,protein:5.5,carbs:24,fat:2,fiber:3.5},
     {name:'Pan Hallulla',brand:'Genérico',icon:'🍞',portion:'1 unidad (100g)',cal:310,protein:8,carbs:56,fat:6,fiber:2},
     {name:'Pan Marraqueta',brand:'Genérico',icon:'🍞',portion:'1 unidad (100g)',cal:280,protein:9,carbs:52,fat:3.5,fiber:2.5},
     {name:'Avena Quaker',brand:'Quaker',icon:'🥣',portion:'40g',cal:150,protein:5,carbs:27,fat:2.5,fiber:4},
     {name:'Cereal Fitness Nestlé',brand:'Nestlé',icon:'🥣',portion:'30g',cal:110,protein:3,carbs:23,fat:1,fiber:3},
-    // Proteínas
     {name:'Pechuga de Pollo',brand:'Genérico',icon:'🍗',portion:'150g',cal:165,protein:31,carbs:0,fat:3.6,fiber:0},
     {name:'Huevo Entero',brand:'Genérico',icon:'🥚',portion:'1 unidad (60g)',cal:78,protein:6,carbs:0.6,fat:5,fiber:0},
     {name:'Clara de Huevo',brand:'Genérico',icon:'🥚',portion:'1 unidad',cal:17,protein:3.6,carbs:0.2,fat:0.1,fiber:0},
@@ -846,25 +961,21 @@ const foodDB = {
     {name:'Salmón Fresco',brand:'Genérico',icon:'🐟',portion:'150g',cal:280,protein:30,carbs:0,fat:18,fiber:0},
     {name:'Carne Molida 10%',brand:'Genérico',icon:'🥩',portion:'150g',cal:255,protein:26,carbs:0,fat:17,fiber:0},
     {name:'Pechuga de Pavo',brand:'Genérico',icon:'🍗',portion:'100g',cal:104,protein:22,carbs:1,fat:1,fiber:0},
-    // Frutas
     {name:'Plátano',brand:'',icon:'🍌',portion:'1 unidad (120g)',cal:105,protein:1.3,carbs:27,fat:0.4,fiber:3.1},
     {name:'Manzana',brand:'',icon:'🍎',portion:'1 unidad (180g)',cal:95,protein:0.5,carbs:25,fat:0.3,fiber:4.4},
     {name:'Palta (Aguacate)',brand:'',icon:'🥑',portion:'1/2 unidad (70g)',cal:114,protein:1.4,carbs:6,fat:10.5,fiber:4.7},
     {name:'Naranja',brand:'',icon:'🍊',portion:'1 unidad (150g)',cal:62,protein:1.2,carbs:15,fat:0.2,fiber:3.1},
     {name:'Arándanos',brand:'',icon:'🫐',portion:'100g',cal:57,protein:0.7,carbs:14,fat:0.3,fiber:2.4},
-    // Verduras
     {name:'Arroz Blanco Cocido',brand:'Genérico',icon:'🍚',portion:'150g',cal:195,protein:4,carbs:43,fat:0.4,fiber:0.6},
     {name:'Arroz Integral Cocido',brand:'Genérico',icon:'🍚',portion:'150g',cal:165,protein:3.8,carbs:35,fat:1.3,fiber:2.7},
     {name:'Fideos Cocidos',brand:'Genérico',icon:'🍝',portion:'150g',cal:210,protein:7.5,carbs:42,fat:1.2,fiber:2.5},
     {name:'Papa Cocida',brand:'',icon:'🥔',portion:'150g',cal:116,protein:3,carbs:26,fat:0.2,fiber:2.4},
     {name:'Ensalada Lechuga y Tomate',brand:'',icon:'🥗',portion:'200g',cal:35,protein:2,carbs:7,fat:0.4,fiber:2.8},
-    // Snacks
     {name:'Barra de Cereal Nature Valley',brand:'Nature Valley',icon:'🍫',portion:'1 barra (42g)',cal:190,protein:3,carbs:29,fat:7,fiber:2},
     {name:'Almendras',brand:'',icon:'🥜',portion:'30g',cal:170,protein:6,carbs:6,fat:15,fiber:3.5},
     {name:'Maní Salado',brand:'',icon:'🥜',portion:'30g',cal:170,protein:7,carbs:5,fat:14,fiber:2.4},
     {name:'Barra Proteica Quest',brand:'Quest',icon:'🍫',portion:'1 barra (60g)',cal:190,protein:21,carbs:22,fat:7,fiber:14},
     {name:'Whey Protein (1 scoop)',brand:'Genérico',icon:'🥛',portion:'30g',cal:120,protein:24,carbs:3,fat:1.5,fiber:0},
-    // Salsas y condimentos
     {name:'Aceite de Oliva',brand:'',icon:'🫒',portion:'1 cucharada (15ml)',cal:119,protein:0,carbs:0,fat:14,fiber:0},
     {name:'Palta Molida (Guacamole)',brand:'',icon:'🥑',portion:'50g',cal:80,protein:1,carbs:4,fat:7,fiber:3},
     {name:'Mayonesa Hellmanns Light',brand:'Hellmanns',icon:'🫙',portion:'15g',cal:35,protein:0,carbs:2.5,fat:3,fiber:0},
@@ -932,8 +1043,8 @@ const exercises = {
   R: []
 };
 
-const catIcons={alimentacion:'🍽',transporte:'🚗',salud:'💊',estudio:'📚',otros:'📦'};
-const catColors={alimentacion:'#E8920A',transporte:'#3D8EE8',salud:'#2ECC71',estudio:'#8B5CF6',otros:'#94A3B8'};
+const catIcons={alimentacion:'🍽',transporte:'🚗',salud:'💊',estudio:'📚',suscripcion:'📺',otros:'📦'};
+const catColors={alimentacion:'#E8920A',transporte:'#3D8EE8',salud:'#2ECC71',estudio:'#8B5CF6',suscripcion:'#FF6B5B',otros:'#94A3B8'};
 const mealIcons={desayuno:'☀️',almuerzo:'🍽',once:'🫖',cena:'🌙',snack:'🍎'};
 const mealTimeLabels={desayuno:'Desayuno',almuerzo:'Almuerzo',once:'Once / Merienda',cena:'Cena',snack:'Snack'};
 const kcalRates={caminar:5,correr:11,bicicleta:8,pesas:6,natacion:10,otro:7};
@@ -949,7 +1060,7 @@ function switchModule(name, el) {
   const fabs = document.getElementById('nutrition-fabs');
   if (fabs) fabs.style.display = name === 'nutricion' ? 'flex' : 'none';
   if (name === 'ejercicios') renderExercises();
-  if (name === 'gastos') renderExpenses();
+  if (name === 'gastos') { renderExpenses(); renderSubAlerts(); }
   if (name === 'agenda') { renderCalendar(); renderTasks(); }
   if (name === 'stats') renderStats();
 }
@@ -977,7 +1088,6 @@ function updateNutrition() {
     cal:acc.cal+(m.cal||0), protein:acc.protein+(m.protein||0),
     carbs:acc.carbs+(m.carbs||0), fat:acc.fat+(m.fat||0), fiber:acc.fiber+(m.fiber||0)
   }), {cal:0,protein:0,carbs:0,fat:0,fiber:0});
-
   const calPct = Math.min(totals.cal / g.cal, 1);
   const circum = 339.3;
   document.getElementById('cal-ring').style.strokeDashoffset = circum - (circum * calPct);
@@ -990,7 +1100,6 @@ function updateNutrition() {
   const deficit = g.cal - totals.cal + burned;
   document.getElementById('leg-deficit').textContent = (deficit >= 0 ? '+' : '') + Math.round(deficit) + ' kcal';
   document.getElementById('leg-deficit').style.color = deficit >= 0 ? 'var(--green)' : 'var(--red)';
-
   const setMacro = (name, val, goal) => {
     const pct = Math.min((val/goal)*100, 100);
     document.getElementById(`${name}-val`).textContent = Math.round(val);
@@ -1045,7 +1154,7 @@ function deleteMeal(id) { state.meals = state.meals.filter(m=>m.id!==id); save(`
 function clearMealForm() { ['meal-name-input','meal-cal-input','meal-qty-input','meal-protein-input','meal-carbs-input','meal-fat-input','meal-fiber-input'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; }); }
 
 // ═══════════════════════════════════════════════════════════════
-// FOOD SEARCH
+// FOOD SEARCH (Local + Open Food Facts API)
 // ═══════════════════════════════════════════════════════════════
 function openFoodSearchModal() {
   document.getElementById('food-search-input').value = '';
@@ -1063,7 +1172,7 @@ function switchSearchTab(el, tab) {
   const input = document.getElementById('food-search-input');
   if (tab === 'products') input.placeholder = 'Ej: Yoghurt Soprole, Monster Energy...';
   else if (tab === 'dishes') input.placeholder = 'Ej: Lasagna, Cazuela, Empanada...';
-  else input.placeholder = 'Buscar en OpenFoodFacts...';
+  else input.placeholder = 'Buscar en OpenFoodFacts (Chile)...';
   searchFood(input.value);
 }
 
@@ -1071,21 +1180,13 @@ function searchFood(query) {
   const results = document.getElementById('food-search-results');
   if (!query || query.length < 2) { results.classList.remove('show'); return; }
   const q = query.toLowerCase();
-
-  if (state.searchTab === 'online') {
-    searchOnline(q);
-    return;
-  }
-
+  if (state.searchTab === 'online') { searchOnline(q); return; }
   const source = state.searchTab === 'dishes' ? foodDB.dishes : foodDB.products;
   const filtered = source.filter(f => f.name.toLowerCase().includes(q) || (f.brand && f.brand.toLowerCase().includes(q)));
-
   if (!filtered.length) {
     results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">No encontrado. Prueba búsqueda online o ingreso manual.</div>`;
-    results.classList.add('show');
-    return;
+    results.classList.add('show'); return;
   }
-
   results.innerHTML = filtered.slice(0,10).map((f,i) => `
     <div class="search-result-item" onclick="selectFood(${state.searchTab === 'dishes' ? "'dish'" : "'prod'"},${i},'${escAttr(f.name)}')">
       <div class="sr-icon">${f.icon||'🍽'}</div>
@@ -1104,7 +1205,7 @@ async function searchOnline(query) {
     const data = await res.json();
     const products = (data.products || []).filter(p => p.product_name && p.nutriments);
     if (!products.length) {
-      results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Sin resultados online para "${escHtml(query)}"</div>`;
+      results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Sin resultados para "${escHtml(query)}"</div>`;
       return;
     }
     results.innerHTML = products.map((p,i) => {
@@ -1131,11 +1232,7 @@ function selectFood(type, idx, name) {
   state.selectedFood = {...food};
   showSelectedFood(food);
 }
-
-function selectOnlineFood(food) {
-  state.selectedFood = food;
-  showSelectedFood(food);
-}
+function selectOnlineFood(food) { state.selectedFood = food; showSelectedFood(food); }
 
 function showSelectedFood(food) {
   document.getElementById('food-search-results').classList.remove('show');
@@ -1149,8 +1246,7 @@ function showSelectedFood(food) {
 }
 
 function addSearchedFood() {
-  if (!state.selectedFood) return;
-  const f = state.selectedFood;
+  const f = state.selectedFood; if (!f) return;
   const meal = { id:Date.now().toString(), name:f.name, time:document.getElementById('food-search-time').value,
     cal:f.cal, protein:f.protein, carbs:f.carbs, fat:f.fat, fiber:f.fiber||0 };
   state.meals.push(meal); save(`sa_meals_${todayKey()}`, state.meals);
@@ -1159,7 +1255,100 @@ function addSearchedFood() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PHOTO ANALYSIS
+// BARCODE SCANNER (Html5Qrcode + Open Food Facts)
+// ═══════════════════════════════════════════════════════════════
+let html5QrCode = null;
+
+function openBarcodeModal() {
+  document.getElementById('barcode-result').style.display = 'none';
+  document.getElementById('barcode-error').style.display = 'none';
+  document.getElementById('barcode-loading').style.display = 'none';
+  document.getElementById('barcode-close-btn').style.display = 'flex';
+  openModal('barcode-modal');
+  setTimeout(startBarcodeScanner, 400);
+}
+
+function startBarcodeScanner() {
+  const readerId = 'barcode-reader';
+  if (html5QrCode) { try { html5QrCode.stop(); } catch(e){} }
+  html5QrCode = new Html5Qrcode(readerId);
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 280, height: 150 }, aspectRatio: 1.5 },
+    onBarcodeSuccess,
+    () => {} // ignore errors during scanning
+  ).catch(err => {
+    document.getElementById(readerId).innerHTML = `<div style="padding:24px;text-align:center;color:var(--red);font-size:13px">No se pudo acceder a la cámara. Verifica los permisos.</div>`;
+  });
+}
+
+async function onBarcodeSuccess(barcode) {
+  if (html5QrCode) { try { await html5QrCode.stop(); } catch(e){} }
+  document.getElementById('barcode-loading').style.display = 'flex';
+  document.getElementById('barcode-close-btn').style.display = 'none';
+  try {
+    const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+    const data = await res.json();
+    if (data.status === 1 && data.product) {
+      const p = data.product;
+      const n = p.nutriments || {};
+      const food = {
+        name: p.product_name || 'Producto sin nombre',
+        brand: p.brands || '',
+        cal: Math.round(n['energy-kcal_100g'] || n['energy-kcal'] || 0),
+        protein: Math.round(n.proteins_100g || 0),
+        carbs: Math.round(n.carbohydrates_100g || 0),
+        fat: Math.round(n.fat_100g || 0),
+        fiber: Math.round(n.fiber_100g || 0),
+        portion: '100g',
+        barcode: barcode
+      };
+      state.barcodeFood = food;
+      document.getElementById('bc-name').textContent = food.name;
+      document.getElementById('bc-brand').textContent = food.brand ? `Marca: ${food.brand} · Código: ${barcode}` : `Código: ${barcode}`;
+      document.getElementById('bc-cal').textContent = food.cal + ' kcal';
+      document.getElementById('bc-p').textContent = food.protein + 'g';
+      document.getElementById('bc-c').textContent = food.carbs + 'g';
+      document.getElementById('bc-f').textContent = food.fat + 'g';
+      document.getElementById('bc-fb').textContent = food.fiber + 'g';
+      document.getElementById('barcode-result').style.display = 'block';
+      document.getElementById('barcode-error').style.display = 'none';
+    } else {
+      document.getElementById('bc-error-msg').textContent = `Código ${barcode} no encontrado`;
+      document.getElementById('barcode-error').style.display = 'block';
+      document.getElementById('barcode-result').style.display = 'none';
+    }
+  } catch(e) {
+    document.getElementById('bc-error-msg').textContent = 'Error de conexión';
+    document.getElementById('barcode-error').style.display = 'block';
+  }
+  document.getElementById('barcode-loading').style.display = 'none';
+}
+
+function addBarcodeFood() {
+  const f = state.barcodeFood; if (!f) return;
+  const meal = { id:Date.now().toString(), name:f.name + (f.brand ? ` (${f.brand})` : ''),
+    time:document.getElementById('bc-time').value,
+    cal:f.cal, protein:f.protein, carbs:f.carbs, fat:f.fat, fiber:f.fiber||0 };
+  state.meals.push(meal); save(`sa_meals_${todayKey()}`, state.meals);
+  closeBarcodeModal(); updateNutrition(); toast(`${f.name} agregado ✓`);
+  state.barcodeFood = null;
+}
+
+function resetBarcode() {
+  document.getElementById('barcode-result').style.display = 'none';
+  document.getElementById('barcode-error').style.display = 'none';
+  document.getElementById('barcode-close-btn').style.display = 'flex';
+  startBarcodeScanner();
+}
+
+function closeBarcodeModal() {
+  if (html5QrCode) { try { html5QrCode.stop(); } catch(e){} }
+  closeModal('barcode-modal');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PHOTO ANALYSIS (Claude AI)
 // ═══════════════════════════════════════════════════════════════
 function openPhotoModal() {
   document.getElementById('photo-preview').style.display = 'none';
@@ -1185,9 +1374,7 @@ async function analyzePhoto(base64Data, mediaType) {
   const loading = document.getElementById('analysis-loading');
   const result = document.getElementById('analysis-result');
   loading.style.display = 'flex'; result.style.display = 'none';
-
   if (!apiKey) { loading.style.display='none'; useMockAnalysis(); toast('Sin API Key — configurala en ajustes.'); return; }
-
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
@@ -1196,12 +1383,10 @@ async function analyzePhoto(base64Data, mediaType) {
         model:'claude-sonnet-4-20250514', max_tokens:1024,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:mediaType,data:base64Data}},
-          {type:'text',text:`Analiza esta imagen de comida/bebida/producto alimenticio. Si es un producto envasado (lata, botella, paquete), identifica la marca y producto exacto. Por ejemplo, si ves una lata verde con el logo de Monster, es "Monster Energy Ultra Paradise". Si ves un yoghurt Soprole, identifícalo.
-
-Responde SOLO con JSON válido, sin texto extra:
-{"items":[{"name":"nombre exacto del producto o alimento","qty":"cantidad/porción","cal":numero}],"totals":{"cal":numero,"protein_g":numero,"carbs_g":numero,"fat_g":numero,"fiber_g":numero}}
-
-Usa datos nutricionales reales para productos conocidos en Chile. Sé preciso.`}
+          {type:'text',text:`Analiza esta imagen de comida/bebida/producto alimenticio. Si es un producto envasado, identifica la marca y producto exacto.
+Responde SOLO con JSON válido:
+{"items":[{"name":"nombre exacto","qty":"cantidad","cal":numero}],"totals":{"cal":numero,"protein_g":numero,"carbs_g":numero,"fat_g":numero,"fiber_g":numero}}
+Usa datos nutricionales reales para productos conocidos en Chile.`}
         ]}]
       })
     });
@@ -1215,7 +1400,7 @@ Usa datos nutricionales reales para productos conocidos en Chile. Sé preciso.`}
 }
 
 function useMockAnalysis() {
-  displayAnalysis({ items:[{name:'Alimento en la foto',qty:'Porción estimada',cal:350}], totals:{cal:350,protein_g:20,carbs_g:40,fat_g:12,fiber_g:3} });
+  displayAnalysis({ items:[{name:'Alimento detectado',qty:'Porción estimada',cal:350}], totals:{cal:350,protein_g:20,carbs_g:40,fat_g:12,fiber_g:3} });
 }
 
 function displayAnalysis(data) {
@@ -1251,11 +1436,9 @@ function setWorkoutDay(btn, day) {
 }
 
 function getExKcalTotal() {
-  // Kcal from gym exercises
   let gymKcal = 0;
   const exList = exercises[state.workoutDay] || [];
   exList.forEach(ex => { if (state.completedEx.includes(ex.id)) gymKcal += (ex.kcalPerSet || 6) * ex.sets; });
-  // Kcal from logged activities
   const actKcal = state.activities.reduce((s,a) => s + (a.kcal||0), 0);
   return gymKcal + actKcal;
 }
@@ -1266,24 +1449,19 @@ function renderExercises() {
   const container = document.getElementById('exercise-list');
   const labels = {A:'Pecho + Tríceps',B:'Espalda + Bíceps',C:'Piernas + Core',D:'Hombros + Lumbar',R:'Día de descanso activo'};
   document.getElementById('workout-day-label').textContent = labels[day] || '';
-
-  // Update calorie counter
   updateExStats();
-
   if (day === 'R') {
-    container.innerHTML = `<div style="text-align:center;padding:40px 20px"><div style="font-size:48px;margin-bottom:12px">😴</div><div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Día de Descanso</div><div style="font-size:14px;color:var(--text3)">Hidratación, elongación suave, buena nutrición.</div></div>`;
+    container.innerHTML = `<div style="text-align:center;padding:40px 20px"><div style="font-size:48px;margin-bottom:12px">😴</div><div class="comic-title" style="font-size:22px;color:var(--text);margin-bottom:8px">Día de Descanso</div><div style="font-size:14px;color:var(--text3)">Hidratación, elongación suave, buena nutrición.</div></div>`;
     document.getElementById('ex-done-count').textContent = '—';
     document.getElementById('ex-total-count').textContent = '—';
     document.getElementById('ex-pct').textContent = '—';
     return;
   }
-
   const done = state.completedEx;
   const doneCount = exList.filter(e => done.includes(e.id)).length;
   document.getElementById('ex-done-count').textContent = doneCount;
   document.getElementById('ex-total-count').textContent = exList.length;
   document.getElementById('ex-pct').textContent = exList.length ? Math.round(doneCount/exList.length*100)+'%' : '0%';
-
   container.innerHTML = exList.map(ex => {
     const isDone = done.includes(ex.id);
     const exKcal = (ex.kcalPerSet||6) * ex.sets;
@@ -1333,7 +1511,6 @@ function saveExActivity() {
   const km = parseFloat(document.getElementById('ex-act-km').value) || 0;
   let kcal = parseInt(document.getElementById('ex-act-kcal').value) || 0;
   if (!kcal) kcal = Math.round(mins * (kcalRates[type] || 7));
-
   const activity = { id:Date.now().toString(), type, mins, steps, km, kcal };
   state.activities.push(activity);
   save(`sa_activities_${todayKey()}`, state.activities);
@@ -1378,13 +1555,11 @@ function renderExpenses() {
   const avg = state.expenses.reduce((s,e)=>s+e.amount,0) / days;
   const budget = state.goals.budget || 500000;
   const saved = Math.max(budget - monthTotal, 0);
-
   document.getElementById('exp-today').textContent = '$' + todayTotal.toLocaleString('es-CL');
   document.getElementById('exp-month').textContent = '$' + monthTotal.toLocaleString('es-CL');
   document.getElementById('exp-budget').textContent = '$' + budget.toLocaleString('es-CL');
   document.getElementById('exp-saved').textContent = '$' + saved.toLocaleString('es-CL');
   document.getElementById('exp-avg').textContent = '$' + Math.round(avg).toLocaleString('es-CL');
-
   const filtered = (currentCatFilter === 'all' ? todayExps : todayExps.filter(e=>e.cat===currentCatFilter));
   const listEl = document.getElementById('expense-list');
   if (!filtered.length) {
@@ -1413,6 +1588,85 @@ function renderBarChart() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// SUBSCRIPTIONS
+// ═══════════════════════════════════════════════════════════════
+function openSubModal() {
+  renderSubList();
+  openModal('sub-modal');
+}
+
+function saveSub() {
+  const name = document.getElementById('sub-name-input').value.trim();
+  const amount = parseFloat(document.getElementById('sub-amount-input').value);
+  const day = parseInt(document.getElementById('sub-day-input').value);
+  const icon = document.getElementById('sub-icon-input').value.trim() || '📺';
+  if (!name || !amount || !day) { toast('Completa todos los campos'); return; }
+  state.subscriptions.push({ id:Date.now().toString(), name, amount, day, icon });
+  save('sa_subs', state.subscriptions);
+  document.getElementById('sub-name-input').value = '';
+  document.getElementById('sub-amount-input').value = '';
+  document.getElementById('sub-day-input').value = '';
+  document.getElementById('sub-icon-input').value = '';
+  renderSubList(); renderSubAlerts();
+  toast(`${name} agregada`);
+}
+
+function deleteSub(id) {
+  state.subscriptions = state.subscriptions.filter(s => s.id !== id);
+  save('sa_subs', state.subscriptions);
+  renderSubList(); renderSubAlerts();
+}
+
+function renderSubList() {
+  const el = document.getElementById('sub-list');
+  if (!state.subscriptions.length) {
+    el.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Sin suscripciones registradas</div>';
+    return;
+  }
+  el.innerHTML = state.subscriptions.map(s => {
+    const daysUntil = getDaysUntilCharge(s.day);
+    return `<div class="sub-card ${daysUntil <= 3 ? 'alert' : ''}">
+      <div class="sub-icon">${s.icon}</div>
+      <div class="sub-info"><div class="sub-name">${escHtml(s.name)}</div><div class="sub-cycle">Cobro día ${s.day} de cada mes</div></div>
+      <div class="sub-right">
+        <div class="sub-amount">$${s.amount.toLocaleString('es-CL')}</div>
+        <div class="sub-days ${daysUntil <= 3 ? '' : ''}">${daysUntil === 0 ? '¡HOY!' : daysUntil + ' días'}</div>
+      </div>
+      <button style="background:none;border:none;cursor:pointer;padding:4px;opacity:.5" onclick="deleteSub('${s.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`;
+  }).join('');
+}
+
+function getDaysUntilCharge(chargeDay) {
+  const now = new Date();
+  const today = now.getDate();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  let nextCharge;
+  if (chargeDay >= today) {
+    nextCharge = new Date(thisYear, thisMonth, chargeDay);
+  } else {
+    nextCharge = new Date(thisYear, thisMonth + 1, chargeDay);
+  }
+  const diff = Math.ceil((nextCharge - now) / (1000 * 60 * 60 * 24));
+  return Math.max(diff, 0);
+}
+
+function renderSubAlerts() {
+  const el = document.getElementById('sub-alerts');
+  const alerts = state.subscriptions.filter(s => getDaysUntilCharge(s.day) <= 3);
+  if (!alerts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = alerts.map(s => {
+    const d = getDaysUntilCharge(s.day);
+    return `<div style="background:rgba(231,76,60,.12);border:2px solid var(--red);border-radius:var(--r-md);padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">${s.icon}</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--red)">${escHtml(s.name)} — ${d === 0 ? '¡Se cobra HOY!' : 'Se cobra en ' + d + ' día' + (d>1?'s':'')}</div>
+      <div style="font-size:11px;color:var(--text3)">Monto: $${s.amount.toLocaleString('es-CL')}</div></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
 // MODULE 4: STATS
 // ═══════════════════════════════════════════════════════════════
 function switchStatTab(el, panelId) {
@@ -1423,11 +1677,7 @@ function switchStatTab(el, panelId) {
   renderStats();
 }
 
-function renderStats() {
-  renderNutriStats();
-  renderExStats();
-  renderMoneyStats();
-}
+function renderStats() { renderNutriStats(); renderExStats(); renderMoneyStats(); }
 
 function renderNutriStats() {
   const totals = state.meals.reduce((acc,m) => ({cal:acc.cal+(m.cal||0),protein:acc.protein+(m.protein||0),carbs:acc.carbs+(m.carbs||0),fat:acc.fat+(m.fat||0)}),{cal:0,protein:0,carbs:0,fat:0});
@@ -1438,8 +1688,6 @@ function renderNutriStats() {
   document.getElementById('stat-consumed').textContent = Math.round(totals.cal);
   document.getElementById('stat-burned').textContent = Math.round(burned);
   document.getElementById('stat-net').textContent = Math.round(totals.cal - burned);
-
-  // Weekly chart
   const chart = document.getElementById('nutri-week-chart');
   const days = [];
   for (let i=6; i>=0; i--) {
@@ -1455,15 +1703,13 @@ function renderNutriStats() {
     <div style="width:100%;border-radius:4px 4px 0 0;min-height:3px;background:${d.today?'var(--accent)':'var(--blue-dim)'};height:${Math.round(d.cal/maxCal*80)}px;transition:height .5s"></div>
     <div style="font-size:9px;color:var(--text3)">${d.label}</div>
   </div>`).join('') + `<div style="position:absolute;left:0;right:0;bottom:${Math.round(state.goals.cal/maxCal*80)+14}px;height:1px;background:var(--green);opacity:.4"></div>`;
-
-  // Macro pie
   const total = totals.protein*4 + totals.carbs*4 + totals.fat*9;
   const pie = document.getElementById('macro-pie');
   if (total > 0) {
     const pPct = Math.round(totals.protein*4/total*100);
     const cPct = Math.round(totals.carbs*4/total*100);
     const fPct = 100 - pPct - cPct;
-    pie.innerHTML = `<div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--blue) 0% ${pPct}%, var(--accent) ${pPct}% ${pPct+cPct}%, var(--red) ${pPct+cPct}% 100%)"></div>
+    pie.innerHTML = `<div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--blue) 0% ${pPct}%, var(--accent) ${pPct}% ${pPct+cPct}%, var(--red) ${pPct+cPct}% 100%);border:3px solid var(--border)"></div>
       <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
         <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:var(--blue)"></div>Prot ${pPct}%</div>
         <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:var(--accent)"></div>Carbs ${cPct}%</div>
@@ -1491,20 +1737,17 @@ function renderExStats() {
     <div style="width:100%;border-radius:4px 4px 0 0;min-height:3px;background:${d.today?'var(--green)':'rgba(46,204,113,.3)'};height:${Math.round(d.kcal/maxK*80)}px;transition:height .5s"></div>
     <div style="font-size:9px;color:var(--text3)">${d.label}</div>
   </div>`).join('');
-
   document.getElementById('stat-total-kcal').textContent = totalKcal;
   document.getElementById('stat-total-steps').textContent = totalSteps.toLocaleString('es-CL');
   document.getElementById('stat-total-km').textContent = totalKm.toFixed(1);
   document.getElementById('stat-total-mins').textContent = totalMins;
-
-  // Recommendation
   const rec = document.getElementById('ex-recommendation');
   const todayKcal = getExKcalTotal();
   const consumed = state.meals.reduce((s,m)=>s+(m.cal||0),0);
-  if (todayKcal > 400) rec.textContent = '¡Gran sesión hoy! Asegúrate de reponer energía con proteínas y carbohidratos complejos. Considera un batido post-entrenamiento.';
-  else if (todayKcal > 200) rec.textContent = 'Buena actividad hoy. Para un día de entrenamiento moderado, mantén tu ingesta calórica normal y prioriza proteínas.';
-  else if (consumed > state.goals.cal) rec.textContent = 'Has superado tu objetivo calórico. Una caminata de 30 minutos puede ayudar a compensar. ¡No te desanimes!';
-  else rec.textContent = 'Día tranquilo en ejercicio. Si es día de descanso, perfecto. Si no, ¡aún estás a tiempo de moverte un poco!';
+  if (todayKcal > 400) rec.textContent = '¡Gran sesión hoy! Asegúrate de reponer energía con proteínas y carbohidratos complejos.';
+  else if (todayKcal > 200) rec.textContent = 'Buena actividad hoy. Mantén tu ingesta calórica normal y prioriza proteínas.';
+  else if (consumed > state.goals.cal) rec.textContent = 'Has superado tu objetivo calórico. Una caminata de 30 min puede ayudar.';
+  else rec.textContent = 'Día tranquilo en ejercicio. Si es día de descanso, perfecto. Si no, ¡aún estás a tiempo!';
 }
 
 function renderMoneyStats() {
@@ -1522,21 +1765,18 @@ function renderMoneyStats() {
     <div style="width:100%;border-radius:4px 4px 0 0;min-height:3px;background:${d.today?'var(--red)':'rgba(231,76,60,.3)'};height:${Math.round(d.total/maxT*80)}px;transition:height .5s"></div>
     <div style="font-size:9px;color:var(--text3)">${d.label}</div>
   </div>`).join('');
-
-  // Category breakdown
   const monthKey = new Date().toISOString().slice(0,7);
   const monthExps = state.expenses.filter(e => e.date.startsWith(monthKey));
   const cats = {};
   monthExps.forEach(e => { cats[e.cat] = (cats[e.cat]||0) + e.amount; });
   const catEl = document.getElementById('money-categories');
   const monthTotal = monthExps.reduce((s,e)=>s+e.amount,0);
-  const catNames = {alimentacion:'Alimentación',transporte:'Transporte',salud:'Salud/Gym',estudio:'Estudio',otros:'Otros'};
+  const catNames = {alimentacion:'Alimentación',transporte:'Transporte',salud:'Salud/Gym',estudio:'Estudio',suscripcion:'Suscripciones',otros:'Otros'};
   catEl.innerHTML = Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,val]) => {
     const pct = monthTotal ? Math.round(val/monthTotal*100) : 0;
     return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">${catIcons[cat]||'📦'} ${catNames[cat]||cat}</span><span style="font-weight:700;color:var(--text);font-family:var(--mono)">$${val.toLocaleString('es-CL')} (${pct}%)</span></div>
     <div class="macro-bar"><div style="height:100%;border-radius:99px;width:${pct}%;background:${catColors[cat]||'var(--text3)'}"></div></div></div>`;
   }).join('') || '<div style="text-align:center;color:var(--text3);font-size:13px">Sin gastos este mes</div>';
-
   const budget = state.goals.budget || 500000;
   const saved = Math.max(budget - monthTotal, 0);
   document.getElementById('stat-monthly-saved').textContent = '$' + saved.toLocaleString('es-CL');
@@ -1624,11 +1864,11 @@ async function syncToSupabase() {
     completed_exercises: state.completedEx,
     workout_day: state.workoutDay,
     goals: state.goals,
+    subscriptions: state.subscriptions,
     totals: state.meals.reduce((acc,m) => ({cal:acc.cal+(m.cal||0),protein:acc.protein+(m.protein||0),carbs:acc.carbs+(m.carbs||0),fat:acc.fat+(m.fat||0),fiber:acc.fiber+(m.fiber||0)}),{cal:0,protein:0,carbs:0,fat:0,fiber:0}),
     kcal_burned: getExKcalTotal(),
     expenses_today: state.expenses.filter(e=>e.date===today).reduce((s,e)=>s+e.amount,0)
   };
-
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/daily_log`, {
       method:'POST',
@@ -1636,7 +1876,7 @@ async function syncToSupabase() {
       body:JSON.stringify(payload)
     });
     if (res.ok) toast('Sincronizado con Supabase ✓');
-    else toast('Error al sincronizar (revisa tablas en Supabase)');
+    else toast('Error al sincronizar');
   } catch(e) { toast('Sin conexión para sincronizar'); }
 }
 
@@ -1692,11 +1932,44 @@ function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&
 function escAttr(s) { return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
 
 // ═══════════════════════════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════════════════════════
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').classList.add('show');
+});
+
+function installPWA() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => {
+    if (choice.outcome === 'accepted') toast('App instalada ✓');
+    deferredPrompt = null;
+    document.getElementById('install-banner').classList.remove('show');
+  });
+}
+
+function dismissInstall() {
+  document.getElementById('install-banner').classList.remove('show');
+}
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
 function init() {
   initHeader();
   updateNutrition();
+  renderSubAlerts();
   const dayBtns = document.querySelectorAll('.day-btn');
   dayBtns.forEach(b => {
     if (b.textContent.includes(`Día ${state.workoutDay}`) || (state.workoutDay==='R' && b.textContent.includes('Descanso'))) {
