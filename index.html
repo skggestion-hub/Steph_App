@@ -180,6 +180,15 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .exercise-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r-lg);margin:0 16px 14px;overflow:hidden;transition:border-color .15s}
 .exercise-card.done{border-color:var(--green);box-shadow:0 0 12px rgba(46,204,113,.2)}
 .ex-body{padding:14px 16px}
+.ex-top-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:10px}
+.ex-thumb{width:72px;height:72px;border-radius:var(--r-md);border:2px solid var(--border);flex-shrink:0;overflow:hidden;background:var(--surface);display:flex;align-items:center;justify-content:center}
+.ex-thumb img{width:100%;height:100%;object-fit:cover}
+.ex-thumb-placeholder{font-size:32px;opacity:.5}
+.ex-thumb-loading{position:relative;overflow:hidden}
+.ex-thumb-loading::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.ex-header{flex:1;min-width:0}
+.ex-body{padding:14px 16px}
 .ex-name{font-family:var(--comic);font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:.5px}
 .ex-equip{font-size:11px;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:4px}
 .ex-details{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -194,6 +203,9 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 .muscle-tag.secondary{background:rgba(232,146,10,.15);color:var(--accent2)}
 .ex-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2)}
 .ex-check input[type="checkbox"]{accent-color:var(--green);width:18px;height:18px;cursor:pointer}
+.ex-tip{background:rgba(232,146,10,.08);border:1px solid rgba(232,146,10,.2);border-radius:var(--r-sm);padding:8px 10px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start}
+.ex-tip-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.ex-tip-text{font-size:11px;color:var(--accent2);line-height:1.5;font-style:italic}
 .day-selector{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto}
 .day-btn{flex-shrink:0;padding:8px 16px;border-radius:var(--r-md);background:var(--card);border:2px solid var(--border);color:var(--text2);font-family:var(--comic);font-size:14px;font-weight:600;cursor:pointer;transition:all .12s;box-shadow:0 3px 0 rgba(0,0,0,.3);letter-spacing:.5px}
 .day-btn:active{box-shadow:none;transform:translateY(3px)}
@@ -449,6 +461,25 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <button class="btn btn-secondary btn-block" style="margin-top:12px;font-size:13px" onclick="openExInputModal()">+ Registrar actividad</button>
       </div>
       <div id="exercise-list"></div>
+      
+      <!-- WGER Exercise Explorer -->
+      <div class="card card-sm" style="margin-top:8px">
+        <div class="card-title">🌐 Explorar Ejercicios (wger.de)</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap" id="wger-muscle-chips">
+          <div class="cat-chip active" onclick="wgerFilterMuscle(this,0)" style="font-size:11px;padding:5px 10px">Todos</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,4)" style="font-size:11px;padding:5px 10px">Pecho</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,12)" style="font-size:11px;padding:5px 10px">Espalda</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,8)" style="font-size:11px;padding:5px 10px">Bíceps</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,5)" style="font-size:11px;padding:5px 10px">Tríceps</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,2)" style="font-size:11px;padding:5px 10px">Deltoides</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,10)" style="font-size:11px;padding:5px 10px">Piernas</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,14)" style="font-size:11px;padding:5px 10px">Glúteos</div>
+          <div class="cat-chip" onclick="wgerFilterMuscle(this,6)" style="font-size:11px;padding:5px 10px">Core</div>
+        </div>
+        <div id="wger-exercise-list" style="max-height:400px;overflow-y:auto">
+          <div style="text-align:center;padding:16px;color:var(--text3);font-size:13px">Toca un músculo para explorar ejercicios</div>
+        </div>
+      </div>
     </div>
 
     <!-- ═══════ MODULE 3: GASTOS ═══════ -->
@@ -920,7 +951,8 @@ const state = {
   selectedFood: null,
   barcodeFood: null,
   searchTab: 'products',
-  calOffset: 0,
+  _lastFilteredResults: [],
+  _lastOnlineResults: [],
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -1013,32 +1045,32 @@ const foodDB = {
 
 const exercises = {
   A: [
-    {id:'a1',name:'Press Banca Plano',equip:'Barra + 25kg/lado',sets:4,reps:'8-10',rest:'90"',primary:['Pectoral mayor','Tríceps'],secondary:['Deltoides ant.'],kcalPerSet:8},
-    {id:'a2',name:'Press Inclinado Mancuerna',equip:'Mancuernas 12kg',sets:3,reps:'10-12',rest:'75"',primary:['Pectoral superior'],secondary:['Deltoides ant.'],kcalPerSet:7},
-    {id:'a3',name:'Pullover Mancuerna',equip:'Mancuerna 10kg + banca',sets:3,reps:'12',rest:'60"',primary:['Pectoral','Dorsal'],secondary:['Serrato'],kcalPerSet:6},
-    {id:'a4',name:'Extensión Tríceps Polea',equip:'Polea alta + agarre recto',sets:4,reps:'12-15',rest:'60"',primary:['Tríceps'],secondary:[],kcalPerSet:5},
-    {id:'a5',name:'Fondos en Banca',equip:'Press banca (sin peso)',sets:3,reps:'15',rest:'60"',primary:['Tríceps','Pectoral'],secondary:['Deltoides'],kcalPerSet:6},
+    {id:'a1',name:'Press Banca Plano',equip:'Barra + 25kg/lado',sets:4,reps:'8-10',rest:'90"',primary:['Pectoral mayor','Tríceps'],secondary:['Deltoides ant.'],kcalPerSet:8,wgerId:192,tip:'Baja la barra al pecho controladamente, empuja explosivo. Pies firmes en el suelo, escápulas retraídas.'},
+    {id:'a2',name:'Press Inclinado Mancuerna',equip:'Mancuernas 12kg',sets:3,reps:'10-12',rest:'75"',primary:['Pectoral superior'],secondary:['Deltoides ant.'],kcalPerSet:7,wgerId:97,tip:'Banca a 30-45°. Baja hasta que los codos pasen la línea del pecho, no rebotes arriba.'},
+    {id:'a3',name:'Pullover Mancuerna',equip:'Mancuerna 10kg + banca',sets:3,reps:'12',rest:'60"',primary:['Pectoral','Dorsal'],secondary:['Serrato'],kcalPerSet:6,wgerId:29,tip:'Cruza la banca con los hombros. Baja la mancuerna detrás de la cabeza con brazos semi-extendidos.'},
+    {id:'a4',name:'Extensión Tríceps Polea',equip:'Polea alta + agarre recto',sets:4,reps:'12-15',rest:'60"',primary:['Tríceps'],secondary:[],kcalPerSet:5,wgerId:86,tip:'Codos pegados al cuerpo, solo mueve el antebrazo. Aprieta al final del movimiento.'},
+    {id:'a5',name:'Fondos en Banca',equip:'Press banca (sin peso)',sets:3,reps:'15',rest:'60"',primary:['Tríceps','Pectoral'],secondary:['Deltoides'],kcalPerSet:6,wgerId:82,tip:'Manos en el borde de la banca, pies al frente. Baja hasta 90° en codos.'},
   ],
   B: [
-    {id:'b1',name:'Jalón al Pecho Polea',equip:'Polea + agarre amplio',sets:4,reps:'10-12',rest:'90"',primary:['Dorsal ancho','Romboides'],secondary:['Bíceps'],kcalPerSet:8},
-    {id:'b2',name:'Remo con Barra',equip:'Barra + 15-20kg',sets:4,reps:'8-10',rest:'90"',primary:['Dorsal ancho','Trapecio'],secondary:['Bíceps','Romboides'],kcalPerSet:9},
-    {id:'b3',name:'Face Pull Polea',equip:'Polea alta + cuerda',sets:3,reps:'15',rest:'60"',primary:['Deltoides post.','Romboides'],secondary:['Trapecio medio'],kcalPerSet:5},
-    {id:'b4',name:'Curl Bíceps Mancuerna',equip:'Mancuernas 10kg',sets:3,reps:'12',rest:'60"',primary:['Bíceps'],secondary:['Braquial'],kcalPerSet:5},
-    {id:'b5',name:'Curl Martillo',equip:'Mancuernas 10-12kg',sets:3,reps:'12',rest:'60"',primary:['Bíceps','Braquiorradial'],secondary:[],kcalPerSet:5},
+    {id:'b1',name:'Jalón al Pecho Polea',equip:'Polea + agarre amplio',sets:4,reps:'10-12',rest:'90"',primary:['Dorsal ancho','Romboides'],secondary:['Bíceps'],kcalPerSet:8,wgerId:107,tip:'Inclina el torso levemente atrás, tira hacia la clavícula. Aprieta omóplatos.'},
+    {id:'b2',name:'Remo con Barra',equip:'Barra + 15-20kg',sets:4,reps:'8-10',rest:'90"',primary:['Dorsal ancho','Trapecio'],secondary:['Bíceps','Romboides'],kcalPerSet:9,wgerId:108,tip:'Torso a 45°, espalda recta. Tira la barra hacia el ombligo, aprieta arriba 1 seg.'},
+    {id:'b3',name:'Face Pull Polea',equip:'Polea alta + cuerda',sets:3,reps:'15',rest:'60"',primary:['Deltoides post.','Romboides'],secondary:['Trapecio medio'],kcalPerSet:5,wgerId:228,tip:'Tira hacia la cara separando las cuerdas. Rota externamente al final. Codos altos.'},
+    {id:'b4',name:'Curl Bíceps Mancuerna',equip:'Mancuernas 10kg',sets:3,reps:'12',rest:'60"',primary:['Bíceps'],secondary:['Braquial'],kcalPerSet:5,wgerId:81,tip:'De pie, codos pegados. Supina la muñeca al subir. Baja controlado 2-3 seg.'},
+    {id:'b5',name:'Curl Martillo',equip:'Mancuernas 10-12kg',sets:3,reps:'12',rest:'60"',primary:['Bíceps','Braquiorradial'],secondary:[],kcalPerSet:5,wgerId:289,tip:'Agarre neutro (pulgares arriba). No balancees, movimiento estricto.'},
   ],
   C: [
-    {id:'c1',name:'Sentadilla con Barra',equip:'Barra + hasta 25kg/lado',sets:4,reps:'8-10',rest:'120"',primary:['Cuádriceps','Glúteos'],secondary:['Isquiotibiales','Lumbar'],kcalPerSet:12},
-    {id:'c2',name:'Sentadilla Goblet',equip:'Mancuerna 12kg',sets:3,reps:'15',rest:'75"',primary:['Cuádriceps'],secondary:['Glúteos','Core'],kcalPerSet:8},
-    {id:'c3',name:'Hip Thrust (banca)',equip:'Press banca + mancuernas 12kg',sets:4,reps:'12-15',rest:'75"',primary:['Glúteos'],secondary:['Isquiotibiales'],kcalPerSet:8},
-    {id:'c4',name:'Plancha en Tatami',equip:'Tatami',sets:3,reps:'45"',rest:'45"',primary:['Core','Lumbar'],secondary:['Deltoides','Glúteos'],kcalPerSet:4},
-    {id:'c5',name:'Crunch Bicicleta',equip:'Tatami',sets:3,reps:'20',rest:'45"',primary:['Recto abdominal','Oblicuos'],secondary:[],kcalPerSet:5},
+    {id:'c1',name:'Sentadilla con Barra',equip:'Barra + hasta 25kg/lado',sets:4,reps:'8-10',rest:'120"',primary:['Cuádriceps','Glúteos'],secondary:['Isquiotibiales','Lumbar'],kcalPerSet:12,wgerId:111,tip:'Pies a la anchura de hombros, puntas levemente afuera. Baja hasta paralelo, pecho arriba.'},
+    {id:'c2',name:'Sentadilla Goblet',equip:'Mancuerna 12kg',sets:3,reps:'15',rest:'75"',primary:['Cuádriceps'],secondary:['Glúteos','Core'],kcalPerSet:8,wgerId:300,tip:'Mancuerna vertical contra el pecho. Codos entre las rodillas al bajar.'},
+    {id:'c3',name:'Hip Thrust (banca)',equip:'Press banca + mancuernas 12kg',sets:4,reps:'12-15',rest:'75"',primary:['Glúteos'],secondary:['Isquiotibiales'],kcalPerSet:8,wgerId:464,tip:'Espalda alta apoyada en banca. Empuja caderas al techo, aprieta glúteos arriba 2 seg.'},
+    {id:'c4',name:'Plancha en Tatami',equip:'Tatami',sets:3,reps:'45"',rest:'45"',primary:['Core','Lumbar'],secondary:['Deltoides','Glúteos'],kcalPerSet:4,wgerId:238,tip:'Antebrazos y puntas de pies. Cuerpo en línea recta, aprieta abdomen, no dejes caer cadera.'},
+    {id:'c5',name:'Crunch Bicicleta',equip:'Tatami',sets:3,reps:'20',rest:'45"',primary:['Recto abdominal','Oblicuos'],secondary:[],kcalPerSet:5,wgerId:91,tip:'Manos detrás de la cabeza, lleva codo a rodilla opuesta alternando. No tires del cuello.'},
   ],
   D: [
-    {id:'d1',name:'Press Hombros Mancuerna',equip:'Mancuernas 10kg',sets:4,reps:'10-12',rest:'75"',primary:['Deltoides','Tríceps'],secondary:['Trapecio'],kcalPerSet:7},
-    {id:'d2',name:'Elevaciones Laterales',equip:'Mancuernas 5kg',sets:4,reps:'15',rest:'60"',primary:['Deltoides medio'],secondary:[],kcalPerSet:5},
-    {id:'d3',name:'Elevaciones Frontales',equip:'Mancuernas 5kg',sets:3,reps:'12',rest:'60"',primary:['Deltoides ant.'],secondary:[],kcalPerSet:5},
-    {id:'d4',name:'Encogimientos Hombros',equip:'Mancuernas 12kg',sets:3,reps:'15',rest:'60"',primary:['Trapecio'],secondary:[],kcalPerSet:4},
-    {id:'d5',name:'Extensión Lumbar',equip:'Tatami',sets:3,reps:'12',rest:'60"',primary:['Lumbar','Glúteos'],secondary:['Isquiotibiales'],kcalPerSet:4},
+    {id:'d1',name:'Press Hombros Mancuerna',equip:'Mancuernas 10kg',sets:4,reps:'10-12',rest:'75"',primary:['Deltoides','Tríceps'],secondary:['Trapecio'],kcalPerSet:7,wgerId:123,tip:'Sentado con respaldo. Mancuernas a la altura de orejas, empuja vertical.'},
+    {id:'d2',name:'Elevaciones Laterales',equip:'Mancuernas 5kg',sets:4,reps:'15',rest:'60"',primary:['Deltoides medio'],secondary:[],kcalPerSet:5,wgerId:148,tip:'Leve inclinación frontal, sube brazos hasta paralelo al suelo. Meñique arriba al subir.'},
+    {id:'d3',name:'Elevaciones Frontales',equip:'Mancuernas 5kg',sets:3,reps:'12',rest:'60"',primary:['Deltoides ant.'],secondary:[],kcalPerSet:5,wgerId:154,tip:'Brazos extendidos, sube hasta la altura de ojos. Sin impulso del cuerpo.'},
+    {id:'d4',name:'Encogimientos Hombros',equip:'Mancuernas 12kg',sets:3,reps:'15',rest:'60"',primary:['Trapecio'],secondary:[],kcalPerSet:4,wgerId:150,tip:'Sube hombros hacia las orejas, mantén 1 seg arriba. Movimiento vertical puro.'},
+    {id:'d5',name:'Extensión Lumbar',equip:'Tatami',sets:3,reps:'12',rest:'60"',primary:['Lumbar','Glúteos'],secondary:['Isquiotibiales'],kcalPerSet:4,wgerId:342,tip:'Boca abajo, manos en la nuca. Sube el torso controlado, aprieta glúteos.'},
   ],
   R: []
 };
@@ -1179,16 +1211,24 @@ function switchSearchTab(el, tab) {
 function searchFood(query) {
   const results = document.getElementById('food-search-results');
   if (!query || query.length < 2) { results.classList.remove('show'); return; }
-  const q = query.toLowerCase();
-  if (state.searchTab === 'online') { searchOnline(q); return; }
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if (state.searchTab === 'online') { searchOnline(query); return; }
   const source = state.searchTab === 'dishes' ? foodDB.dishes : foodDB.products;
-  const filtered = source.filter(f => f.name.toLowerCase().includes(q) || (f.brand && f.brand.toLowerCase().includes(q)));
+  // Accent-insensitive search across name, brand, and portion
+  const normalize = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const words = q.split(/\s+/).filter(w => w.length > 1);
+  const filtered = source.filter(f => {
+    const haystack = normalize(f.name) + ' ' + normalize(f.brand) + ' ' + normalize(f.portion);
+    return words.every(w => haystack.includes(w));
+  });
   if (!filtered.length) {
     results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">No encontrado. Prueba búsqueda online o ingreso manual.</div>`;
     results.classList.add('show'); return;
   }
-  results.innerHTML = filtered.slice(0,10).map((f,i) => `
-    <div class="search-result-item" onclick="selectFood(${state.searchTab === 'dishes' ? "'dish'" : "'prod'"},${i},'${escAttr(f.name)}')">
+  // Store filtered results for safe selection by index
+  state._lastFilteredResults = filtered.slice(0,10);
+  results.innerHTML = state._lastFilteredResults.map((f,i) => `
+    <div class="search-result-item" onclick="selectLocalFood(${i})">
       <div class="sr-icon">${f.icon||'🍽'}</div>
       <div class="sr-info"><div class="sr-name">${escHtml(f.name)}${f.brand ? ` <span style="color:var(--text3)">(${f.brand})</span>` : ''}</div><div class="sr-detail">${f.portion} · P:${f.protein}g C:${f.carbs}g G:${f.fat}g</div></div>
       <div class="sr-cal">${f.cal} kcal</div>
@@ -1196,43 +1236,68 @@ function searchFood(query) {
   results.classList.add('show');
 }
 
+// Debounce for online search
+let _onlineSearchTimer = null;
+
 async function searchOnline(query) {
   const results = document.getElementById('food-search-results');
+  // Debounce: wait 400ms after last keystroke before fetching
+  clearTimeout(_onlineSearchTimer);
+  _onlineSearchTimer = setTimeout(() => _doSearchOnline(query), 400);
   results.innerHTML = `<div style="padding:16px;text-align:center"><div class="spin" style="margin:0 auto 8px;width:24px;height:24px;border-width:2px"></div><span style="font-size:12px;color:var(--text3)">Buscando en OpenFoodFacts...</span></div>`;
   results.classList.add('show');
+}
+
+async function _doSearchOnline(query) {
+  const results = document.getElementById('food-search-results');
   try {
-    const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&countries_tags_en=chile`);
+    // Use cc=cl for Chile + lc=es for Spanish labels
+    const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10&cc=cl&lc=es`);
     const data = await res.json();
     const products = (data.products || []).filter(p => p.product_name && p.nutriments);
     if (!products.length) {
-      results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Sin resultados para "${escHtml(query)}"</div>`;
+      results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Sin resultados para "${escHtml(query)}". Prueba otro término.</div>`;
       return;
     }
-    results.innerHTML = products.map((p,i) => {
+    // Store for safe selection
+    state._lastOnlineResults = products.map(p => {
       const n = p.nutriments;
-      const cal = Math.round(n['energy-kcal_100g']||n['energy-kcal']||0);
-      const prot = Math.round(n.proteins_100g||0);
-      const carb = Math.round(n.carbohydrates_100g||0);
-      const fat = Math.round(n.fat_100g||0);
-      return `<div class="search-result-item" onclick='selectOnlineFood(${JSON.stringify({name:p.product_name,brand:p.brands||"",cal,protein:prot,carbs:carb,fat,fiber:Math.round(n.fiber_100g||0),portion:"100g"}).replace(/'/g,"&#39;")})'>
-        <div class="sr-icon">🌐</div>
-        <div class="sr-info"><div class="sr-name">${escHtml(p.product_name)}</div><div class="sr-detail">por 100g · P:${prot}g C:${carb}g G:${fat}g</div></div>
-        <div class="sr-cal">${cal} kcal</div>
-      </div>`;
-    }).join('');
+      return {
+        name: p.product_name || 'Producto',
+        brand: p.brands || '',
+        cal: Math.round(n['energy-kcal_100g']||n['energy-kcal']||0),
+        protein: Math.round(n.proteins_100g||0),
+        carbs: Math.round(n.carbohydrates_100g||0),
+        fat: Math.round(n.fat_100g||0),
+        fiber: Math.round(n.fiber_100g||0),
+        portion: p.serving_size || '100g',
+        image: p.image_small_url || ''
+      };
+    });
+    results.innerHTML = state._lastOnlineResults.map((f,i) => `
+      <div class="search-result-item" onclick="selectOnlineByIndex(${i})">
+        <div class="sr-icon">${f.image ? `<img src="${f.image}" style="width:32px;height:32px;border-radius:4px;object-fit:cover" onerror="this.outerHTML='🌐'">` : '🌐'}</div>
+        <div class="sr-info"><div class="sr-name">${escHtml(f.name)}</div><div class="sr-detail">${escHtml(f.brand)} · ${f.portion} · P:${f.protein}g C:${f.carbs}g G:${f.fat}g</div></div>
+        <div class="sr-cal">${f.cal} kcal</div>
+      </div>`).join('');
   } catch(e) {
     results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--red);font-size:13px">Error de conexión. Revisa tu internet.</div>`;
   }
 }
 
-function selectFood(type, idx, name) {
-  const source = type === 'dish' ? foodDB.dishes : foodDB.products;
-  const food = source.find(f => f.name === name.replace(/&#39;/g,"'")) || source[idx];
+// Safe selection by index (no more JSON in onclick attrs)
+function selectLocalFood(idx) {
+  const food = (state._lastFilteredResults || [])[idx];
   if (!food) return;
   state.selectedFood = {...food};
   showSelectedFood(food);
 }
-function selectOnlineFood(food) { state.selectedFood = food; showSelectedFood(food); }
+function selectOnlineByIndex(idx) {
+  const food = (state._lastOnlineResults || [])[idx];
+  if (!food) return;
+  state.selectedFood = {...food};
+  showSelectedFood(food);
+}
 
 function showSelectedFood(food) {
   document.getElementById('food-search-results').classList.remove('show');
@@ -1465,21 +1530,36 @@ function renderExercises() {
   container.innerHTML = exList.map(ex => {
     const isDone = done.includes(ex.id);
     const exKcal = (ex.kcalPerSet||6) * ex.sets;
+    const imgSrc = state.exImages && state.exImages[ex.wgerId] ? state.exImages[ex.wgerId] : '';
+    const thumbLoading = (!imgSrc && ex.wgerId) ? ' ex-thumb-loading' : '';
     return `<div class="exercise-card ${isDone?'done':''}" id="excard-${ex.id}">
       <div class="ex-body">
-        <div class="ex-name">${escHtml(ex.name)}</div>
-        <div class="ex-equip"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6.5 6.5h11M6 12h12"/></svg>${escHtml(ex.equip)}</div>
-        <div class="ex-details">
-          <span class="ex-chip sets">${ex.sets} series</span>
-          <span class="ex-chip reps">${ex.reps} reps</span>
-          <span class="ex-chip rest">Desc. ${ex.rest}</span>
-          <span class="ex-chip kcal-chip">~${exKcal} kcal</span>
+        <div class="ex-top-row">
+          <div class="ex-thumb${thumbLoading}" id="ex-thumb-${ex.id}">
+            ${imgSrc
+              ? `<img src="${imgSrc}" alt="${escHtml(ex.name)}" loading="lazy">`
+              : `<div class="ex-thumb-placeholder">🏋️</div>`}
+          </div>
+          <div class="ex-header">
+            <div class="ex-name">${escHtml(ex.name)}</div>
+            <div class="ex-equip"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6.5 6.5h11M6 12h12"/></svg>${escHtml(ex.equip)}</div>
+            <div class="ex-details" style="margin-top:6px">
+              <span class="ex-chip sets">${ex.sets} series</span>
+              <span class="ex-chip reps">${ex.reps} reps</span>
+              <span class="ex-chip rest">Desc. ${ex.rest}</span>
+              <span class="ex-chip kcal-chip">~${exKcal} kcal</span>
+            </div>
+          </div>
         </div>
+        ${ex.tip ? `<div class="ex-tip"><div class="ex-tip-icon">💡</div><div class="ex-tip-text">${escHtml(ex.tip)}</div></div>` : ''}
         <div class="ex-muscles">${ex.primary.map(m=>`<span class="muscle-tag primary">${m}</span>`).join('')}${ex.secondary.map(m=>`<span class="muscle-tag secondary">${m}</span>`).join('')}</div>
         <label class="ex-check"><input type="checkbox" ${isDone?'checked':''} onchange="toggleExercise('${ex.id}',this.checked)">${isDone?'Completado':'Marcar como completado'}</label>
       </div>
     </div>`;
   }).join('');
+  
+  // Load images from wger.de if not cached yet
+  loadExerciseImages(exList);
 }
 
 function toggleExercise(id, checked) {
@@ -1488,6 +1568,79 @@ function toggleExercise(id, checked) {
   save(`sa_ex_${todayKey()}`, state.completedEx);
   renderExercises(); updateNutrition();
   if (checked) toast('Ejercicio completado 💪');
+}
+
+// Fetch exercise images from wger.de API using exerciseinfo endpoint
+// Images are cached in localStorage for offline/instant access
+if (!state.exImages) {
+  try { state.exImages = JSON.parse(localStorage.getItem('sa_ex_images')) || {}; } catch(e) { state.exImages = {}; }
+}
+let _imgLoadingIds = new Set();
+
+async function loadExerciseImages(exList) {
+  const toLoad = exList.filter(ex => ex.wgerId && !state.exImages[ex.wgerId] && !_imgLoadingIds.has(ex.wgerId));
+  if (!toLoad.length) return;
+  toLoad.forEach(ex => _imgLoadingIds.add(ex.wgerId));
+  
+  for (const ex of toLoad) {
+    try {
+      // exerciseinfo/{id} returns full exercise data including images array
+      const res = await fetch(`https://wger.de/api/v2/exerciseinfo/${ex.wgerId}/?format=json`);
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+      const mainImg = (data.images || []).find(img => img.is_main);
+      const imgUrl = mainImg ? mainImg.image : ((data.images || [])[0] || {}).image;
+      
+      if (imgUrl) {
+        state.exImages[ex.wgerId] = imgUrl;
+        // Inject into DOM immediately
+        const thumb = document.getElementById('ex-thumb-' + ex.id);
+        if (thumb) {
+          thumb.classList.remove('ex-thumb-loading');
+          thumb.innerHTML = `<img src="${imgUrl}" alt="${escHtml(ex.name)}" loading="lazy">`;
+        }
+      }
+    } catch(e) {
+      // Try alternative: exerciseimage endpoint with exercise= filter
+      try {
+        const res2 = await fetch(`https://wger.de/api/v2/exerciseimage/?exercise=${ex.wgerId}&is_main=True&limit=1&format=json`);
+        const data2 = await res2.json();
+        const imgs = data2.results || [];
+        if (imgs.length > 0 && imgs[0].image) {
+          state.exImages[ex.wgerId] = imgs[0].image;
+          const thumb = document.getElementById('ex-thumb-' + ex.id);
+          if (thumb) {
+            thumb.classList.remove('ex-thumb-loading');
+            thumb.innerHTML = `<img src="${imgs[0].image}" alt="${escHtml(ex.name)}" loading="lazy">`;
+          }
+        }
+      } catch(e2) { /* use muscle map fallback */ 
+        const thumb = document.getElementById('ex-thumb-' + ex.id);
+        if (thumb) {
+          thumb.classList.remove('ex-thumb-loading');
+          // Show primary muscle map as fallback
+          const muscleId = getMuscleIdForExercise(ex);
+          if (muscleId) {
+            thumb.innerHTML = `<img src="https://wger.de/static/images/muscles/main/muscle-${muscleId}.svg" alt="${escHtml(ex.name)}" style="width:90%;height:90%;object-fit:contain;filter:invert(1) hue-rotate(180deg) brightness(1.5)">`;
+          }
+        }
+      }
+    }
+    _imgLoadingIds.delete(ex.wgerId);
+    // Small delay between requests to not overload wger.de
+    await new Promise(r => setTimeout(r, 200));
+  }
+  // Persist image cache to localStorage
+  try { localStorage.setItem('sa_ex_images', JSON.stringify(state.exImages)); } catch(e) {}
+}
+
+// Map exercise primary muscles to wger muscle IDs for SVG fallback
+function getMuscleIdForExercise(ex) {
+  const map = {'Pectoral':4,'Pectoral mayor':4,'Pectoral superior':4,'Tríceps':5,'Dorsal':12,'Dorsal ancho':12,
+    'Bíceps':1,'Deltoides':2,'Deltoides ant.':2,'Deltoides medio':2,'Deltoides post.':2,
+    'Cuádriceps':10,'Glúteos':14,'Glúteo mayor':14,'Core':6,'Recto abdominal':6,'Oblicuos':9,
+    'Trapecio':11,'Romboides':12,'Lumbar':14,'Isquiotibiales':7,'Braquiorradial':13,'Braquial':13,'Serrato':3};
+  return map[ex.primary[0]] || null;
 }
 
 function updateExStats() {
@@ -1521,6 +1674,91 @@ function saveExActivity() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// WGER.DE EXERCISE API (Open Source - CC-BY-SA 3.0)
+// ═══════════════════════════════════════════════════════════════
+const WGER_API = 'https://wger.de/api/v2';
+let _wgerCache = {};
+
+async function wgerFilterMuscle(el, muscleId) {
+  document.querySelectorAll('#wger-muscle-chips .cat-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const container = document.getElementById('wger-exercise-list');
+  container.innerHTML = `<div style="text-align:center;padding:16px"><div class="spin" style="margin:0 auto 8px;width:24px;height:24px;border-width:2px"></div><span style="font-size:12px;color:var(--text3)">Cargando ejercicios...</span></div>`;
+  try {
+    const cacheKey = 'muscle_' + muscleId;
+    let exercises;
+    if (_wgerCache[cacheKey]) {
+      exercises = _wgerCache[cacheKey];
+    } else {
+      // Try Spanish (4) first, then English (2)
+      let results = [];
+      for (const lang of [4, 2]) {
+        const url = muscleId === 0
+          ? `${WGER_API}/exercise/?language=${lang}&limit=20&format=json`
+          : `${WGER_API}/exercise/?language=${lang}&muscles=${muscleId}&limit=20&format=json`;
+        const res = await fetch(url);
+        const data = await res.json();
+        results = (data.results || []).filter(e => e.name);
+        if (results.length > 0) break;
+      }
+      // Fetch images
+      const exIds = results.map(e => e.id);
+      let images = {};
+      if (exIds.length > 0) {
+        try {
+          const imgRes = await fetch(`${WGER_API}/exerciseimage/?is_main=True&limit=40&format=json`);
+          const imgData = await imgRes.json();
+          (imgData.results || []).forEach(img => {
+            if (exIds.includes(img.exercise) && !images[img.exercise]) images[img.exercise] = img.image;
+          });
+        } catch(e) {}
+      }
+      exercises = results.map(ex => ({
+        id: ex.id, name: ex.name,
+        description: (ex.description || '').replace(/<[^>]*>/g, '').slice(0, 120),
+        muscles: ex.muscles || [], muscles_secondary: ex.muscles_secondary || [],
+        equipment: ex.equipment || [], image: images[ex.id] || null
+      }));
+      _wgerCache[cacheKey] = exercises;
+    }
+    if (!exercises.length) {
+      container.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px">No se encontraron ejercicios.</div>`;
+      return;
+    }
+    const muscleNames = await getWgerMuscleNames();
+    container.innerHTML = exercises.map(ex => `
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border2);align-items:flex-start">
+        ${ex.image 
+          ? `<img src="${ex.image}" style="width:60px;height:60px;border-radius:var(--r-sm);object-fit:cover;border:2px solid var(--border);flex-shrink:0" onerror="this.style.display='none'">`
+          : `<div style="width:60px;height:60px;border-radius:var(--r-sm);background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:24px">🏋️</div>`}
+        <div style="flex:1;min-width:0">
+          <div style="font-family:var(--comic);font-size:14px;color:var(--text);letter-spacing:.5px">${escHtml(ex.name)}</div>
+          ${ex.description ? `<div style="font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4">${escHtml(ex.description)}</div>` : ''}
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">
+            ${ex.muscles.map(mId => `<span style="font-size:9px;padding:2px 6px;border-radius:99px;background:rgba(232,74,60,.2);color:#FF6B5B;text-transform:uppercase;letter-spacing:.3px">${muscleNames[mId]||'M'+mId}</span>`).join('')}
+            ${ex.muscles_secondary.map(mId => `<span style="font-size:9px;padding:2px 6px;border-radius:99px;background:rgba(232,146,10,.15);color:var(--accent2);text-transform:uppercase;letter-spacing:.3px">${muscleNames[mId]||'M'+mId}</span>`).join('')}
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    container.innerHTML = `<div style="text-align:center;padding:16px;color:var(--red);font-size:13px">Error de conexión con wger.de</div>`;
+  }
+}
+
+async function getWgerMuscleNames() {
+  if (_wgerCache._muscles) return _wgerCache._muscles;
+  const defaults = {1:'Bíceps braquial',2:'Deltoides ant.',3:'Serrato',4:'Pectoral mayor',5:'Tríceps',6:'Recto abdominal',7:'Gastrocnemio',8:'Bíceps braquial',9:'Oblicuos',10:'Cuádriceps',11:'Trapecio',12:'Dorsal ancho',13:'Braquial',14:'Glúteo mayor',15:'Sóleo'};
+  try {
+    const res = await fetch(`${WGER_API}/muscle/?limit=30&format=json`);
+    const data = await res.json();
+    const names = {};
+    (data.results||[]).forEach(m => { names[m.id] = m.name_en||m.name||defaults[m.id]||'Músculo'; });
+    _wgerCache._muscles = {...defaults,...names};
+    return _wgerCache._muscles;
+  } catch(e) { _wgerCache._muscles = defaults; return defaults; }
+}
+
+// ═══════════════════════════════════════════════════════════════
 // MODULE 3: EXPENSES
 // ═══════════════════════════════════════════════════════════════
 function openExpModal() { openModal('exp-modal'); }
@@ -1536,6 +1774,13 @@ function saveExpense() {
   document.getElementById('exp-desc-input').value = '';
   document.getElementById('exp-amount-input').value = '';
   renderExpenses(); toast('Gasto registrado');
+}
+
+function deleteExpense(id) {
+  state.expenses = state.expenses.filter(e => e.id !== id);
+  save('sa_expenses', state.expenses);
+  renderExpenses();
+  toast('Gasto eliminado');
 }
 
 let currentCatFilter = 'all';
@@ -1568,7 +1813,8 @@ function renderExpenses() {
     listEl.innerHTML = [...filtered].reverse().map(e => `
       <div class="exp-list-item"><div class="exp-icon" style="background:${catColors[e.cat]}22">${catIcons[e.cat]||'📦'}</div>
       <div class="exp-info"><div class="exp-name">${escHtml(e.desc)}</div><div class="exp-meta">${e.time||''} · ${e.cat}</div></div>
-      <div class="exp-amount neg">-$${e.amount.toLocaleString('es-CL')}</div></div>`).join('');
+      <div class="exp-amount neg">-$${e.amount.toLocaleString('es-CL')}</div>
+      <button class="meal-del" onclick="event.stopPropagation();deleteExpense('${e.id}')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`).join('');
   }
   renderBarChart();
 }
@@ -1921,9 +2167,13 @@ function clearDayData() {
 function openModal(id) {
   const m = document.getElementById(id); if (!m) return;
   m.classList.add('open');
-  m.addEventListener('click', (e) => { if (e.target === m) closeModal(id); }, {once:true});
 }
-function closeModal(id) { const m = document.getElementById(id); if (m) m.classList.remove('open'); }
+function closeModal(id) {
+  if (id === 'barcode-modal' && typeof html5QrCode !== 'undefined' && html5QrCode) {
+    try { html5QrCode.stop(); } catch(e){}
+  }
+  const m = document.getElementById(id); if (m) m.classList.remove('open');
+}
 
 let toastTimer;
 function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2800); }
@@ -1977,7 +2227,7 @@ function init() {
     }
   });
   document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); });
+    m.addEventListener('click', e => { if (e.target===m) closeModal(m.id); });
   });
 }
 
