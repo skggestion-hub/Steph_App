@@ -415,8 +415,8 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
         <button class="fab fab-green" style="position:static;width:48px;height:48px" onclick="openBarcodeModal()" title="Escanear código de barras">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" style="width:22px;height:22px"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><line x1="7" y1="8" x2="7" y2="16"/><line x1="11" y1="8" x2="11" y2="16"/><line x1="15" y1="8" x2="15" y2="16"/><line x1="17" y1="8" x2="17" y2="16"/></svg>
         </button>
-        <button class="fab fab-blue" style="position:static;width:48px;height:48px" onclick="openFoodSearchModal()" title="Buscar alimento">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <button class="fab fab-blue" style="position:static;width:48px;height:48px" onclick="openDescribeMealModal()" title="Describir comida">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </button>
         <button class="fab fab-orange" style="position:static" onclick="openPhotoModal()" title="Foto de comida">
           <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -657,47 +657,57 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
 
 <!-- ═══════ MODALS ═══════ -->
 
-<!-- Food Search Modal -->
-<div class="modal-overlay" id="food-search-modal">
+<!-- Describe Meal Modal (AI Analyzer) -->
+<div class="modal-overlay" id="describe-meal-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🔍 Buscar Alimento</div>
-    <div class="search-tabs">
-      <div class="search-tab active" onclick="switchSearchTab(this,'products')">🏷 Productos</div>
-      <div class="search-tab" onclick="switchSearchTab(this,'dishes')">🍽 Platos</div>
-      <div class="search-tab" onclick="switchSearchTab(this,'online')">🌐 Online</div>
-    </div>
-    <div class="search-wrap">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input class="search-input" type="text" id="food-search-input" placeholder="Ej: Yoghurt Soprole, Monster, Lasagna..." oninput="searchFood(this.value)" autocomplete="off">
-      <div class="search-results" id="food-search-results"></div>
+    <div class="modal-title">✍️ Describir Comida</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.5">Describe lo que comiste con detalle: cantidades, marcas, porciones. La IA calculará las calorías y macros automáticamente.</p>
+    <div class="input-group">
+      <label class="input-label">¿Qué comiste?</label>
+      <textarea class="input" id="meal-describe-input" rows="4" placeholder="Ej: Desayuné 2 huevos revueltos con 2 tostadas de pan de molde Bimbo, medio aguacate y 200ml de batido de proteína..." style="resize:none;line-height:1.5;font-size:14px"></textarea>
     </div>
     <div class="input-group">
       <label class="input-label">Momento del día</label>
-      <select class="input" id="food-search-time">
-        <option value="desayuno">Desayuno</option>
-        <option value="almuerzo" selected>Almuerzo</option>
-        <option value="once">Once / Merienda</option>
-        <option value="cena">Cena</option>
-        <option value="snack">Snack</option>
+      <select class="input" id="meal-describe-time">
+        <option value="desayuno">☀️ Desayuno</option>
+        <option value="almuerzo" selected>🍽 Almuerzo</option>
+        <option value="once">🫖 Once / Merienda</option>
+        <option value="cena">🌙 Cena</option>
+        <option value="snack">🍎 Snack</option>
       </select>
     </div>
-    <div id="food-search-selected" style="display:none">
-      <div class="card card-sm" style="margin:0 0 14px;background:var(--card)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:14px;font-weight:600;color:var(--text)" id="fs-sel-name">—</span>
-          <span class="comic-num" style="font-size:20px;color:var(--accent)" id="fs-sel-cal">0 kcal</span>
+    <div class="loading-spin" id="describe-loading"><div class="spin"></div><span>Analizando con Claude AI...</span></div>
+    <!-- Results -->
+    <div id="describe-result" style="display:none">
+      <div class="card card-sm" style="margin:0 0 10px;background:var(--card)">
+        <div class="card-title" style="margin-bottom:8px">Desglose Nutricional</div>
+        <div id="describe-items"></div>
+        <div class="divider" style="margin:10px 0"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0">
+          <span style="font-family:var(--comic);font-size:14px;color:var(--text);letter-spacing:.5px">TOTAL</span>
+          <span class="comic-num" style="font-size:22px;color:var(--accent)" id="desc-total-cal">0 kcal</span>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;font-size:11px;text-align:center">
-          <div><div style="color:var(--blue);font-weight:700;font-family:var(--mono)" id="fs-sel-p">0g</div><div style="color:var(--text3)">Prot</div></div>
-          <div><div style="color:var(--accent);font-weight:700;font-family:var(--mono)" id="fs-sel-c">0g</div><div style="color:var(--text3)">Carbs</div></div>
-          <div><div style="color:var(--red);font-weight:700;font-family:var(--mono)" id="fs-sel-f">0g</div><div style="color:var(--text3)">Grasas</div></div>
-          <div><div style="color:var(--green);font-weight:700;font-family:var(--mono)" id="fs-sel-fb">0g</div><div style="color:var(--text3)">Fibra</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;font-size:11px;text-align:center;margin-top:8px">
+          <div><div style="color:var(--blue);font-weight:700;font-family:var(--mono)" id="desc-p">0g</div><div style="color:var(--text3)">Prot</div></div>
+          <div><div style="color:var(--accent);font-weight:700;font-family:var(--mono)" id="desc-c">0g</div><div style="color:var(--text3)">Carbs</div></div>
+          <div><div style="color:var(--red);font-weight:700;font-family:var(--mono)" id="desc-f">0g</div><div style="color:var(--text3)">Grasas</div></div>
+          <div><div style="color:var(--green);font-weight:700;font-family:var(--mono)" id="desc-fb">0g</div><div style="color:var(--text3)">Fibra</div></div>
         </div>
       </div>
       <div style="display:flex;gap:10px">
-        <button class="btn btn-secondary" style="flex:1" onclick="closeModal('food-search-modal')">Cancelar</button>
-        <button class="btn btn-primary" style="flex:2" onclick="addSearchedFood()">Agregar</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="resetDescribeMeal()">Reintentar</button>
+        <button class="btn btn-primary" style="flex:2" onclick="addDescribedMeal()">Agregar al Registro</button>
+      </div>
+    </div>
+    <!-- Initial buttons (before analysis) -->
+    <div id="describe-btns">
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" style="flex:1" onclick="closeModal('describe-meal-modal')">Cancelar</button>
+        <button class="btn btn-primary" style="flex:2" onclick="analyzeDescription()">🤖 Analizar</button>
+      </div>
+      <div style="margin-top:12px;padding:10px;border-radius:var(--r-sm);background:rgba(61,142,232,.08);border:1px solid rgba(61,142,232,.2)">
+        <div style="font-size:11px;color:var(--blue);line-height:1.5">💡 <strong>Tips:</strong> Incluye cantidades (2 huevos, 150g de arroz, 1 vaso de leche), marcas si aplica (Bimbo, Colun, Soprole) y método de cocción (frito, hervido, a la plancha).</div>
       </div>
     </div>
   </div>
@@ -742,7 +752,7 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
       <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Intenta con otro producto o búscalo manualmente</div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-secondary" style="flex:1" onclick="resetBarcode()">Reintentar</button>
-        <button class="btn btn-blue" style="flex:1" onclick="closeModal('barcode-modal');openFoodSearchModal()">Buscar manual</button>
+        <button class="btn btn-blue" style="flex:1" onclick="closeModal('barcode-modal');openDescribeMealModal()">Describir manual</button>
       </div>
     </div>
     <div style="margin-top:12px;display:flex;gap:10px" id="barcode-close-btn">
@@ -852,21 +862,70 @@ body{font-family:var(--font);color:var(--text);font-size:15px;line-height:1.5}
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">🏃 Registrar Actividad</div>
-    <div class="input-group"><label class="input-label">Tipo de actividad</label>
-      <select class="input" id="ex-act-type">
-        <option value="caminar">🚶 Caminar</option><option value="correr">🏃 Correr</option><option value="bicicleta">🚴 Bicicleta</option>
-        <option value="pesas">🏋️ Pesas (gym)</option><option value="natacion">🏊 Natación</option><option value="otro">⚡ Otro</option>
+    <div class="input-group"><label class="input-label">Equipo / Tipo</label>
+      <select class="input" id="ex-act-type" onchange="updateExFields()">
+        <option value="bici_estatica">🚴 Bicicleta Estática</option>
+        <option value="trotadora">🏃 Trotadora Eléctrica</option>
+        <option value="caminata_outdoor">🚶 Caminata al Aire Libre (Strava)</option>
+        <option value="trote_outdoor">🏃‍♂️ Trote al Aire Libre (Strava)</option>
+        <option value="pesas">🏋️ Pesas (Gym)</option>
+        <option value="otro">⚡ Otro</option>
       </select>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="input-group"><label class="input-label">Duración (min)</label><input class="input" type="number" id="ex-act-mins" placeholder="30"></div>
-      <div class="input-group"><label class="input-label">Pasos (opcional)</label><input class="input" type="number" id="ex-act-steps" placeholder="3000"></div>
-      <div class="input-group"><label class="input-label">Distancia km (opc.)</label><input class="input" type="number" id="ex-act-km" placeholder="2.5" step="0.1"></div>
-      <div class="input-group"><label class="input-label">kcal (auto si vacío)</label><input class="input" type="number" id="ex-act-kcal" placeholder="Auto"></div>
+    <!-- Dynamic fields based on equipment -->
+    <div id="ex-fields-bici" class="ex-dynamic-fields">
+      <div style="font-size:11px;color:var(--accent2);margin-bottom:10px;padding:8px;border-radius:var(--r-sm);background:rgba(232,146,10,.08);border:1px solid rgba(232,146,10,.15)">🚴 Solo tiempo. ~8.5 kcal/min a intensidad moderada. Cuando tengas odómetro podrás agregar distancia.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="input-group"><label class="input-label">Duración (min)</label><input class="input" type="number" id="ex-bici-mins" placeholder="30"></div>
+        <div class="input-group"><label class="input-label">Intensidad</label>
+          <select class="input" id="ex-bici-intensity">
+            <option value="light">Suave (6 kcal/min)</option>
+            <option value="moderate" selected>Moderada (8.5 kcal/min)</option>
+            <option value="intense">Intensa (11 kcal/min)</option>
+          </select>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:6px">
+    <div id="ex-fields-trotadora" class="ex-dynamic-fields" style="display:none">
+      <div style="font-size:11px;color:var(--green);margin-bottom:10px;padding:8px;border-radius:var(--r-sm);background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.15)">🏃 Ingresa los datos que muestra la trotadora. Si muestra kcal, úsala directamente.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="input-group"><label class="input-label">Duración (min)</label><input class="input" type="number" id="ex-trot-mins" placeholder="25"></div>
+        <div class="input-group"><label class="input-label">Distancia (km)</label><input class="input" type="number" id="ex-trot-km" placeholder="3.5" step="0.1"></div>
+        <div class="input-group"><label class="input-label">kcal (de la máquina)</label><input class="input" type="number" id="ex-trot-kcal" placeholder="Opcional"></div>
+        <div class="input-group"><label class="input-label">Velocidad km/h</label><input class="input" type="number" id="ex-trot-speed" placeholder="7" step="0.5"></div>
+      </div>
+    </div>
+    <div id="ex-fields-outdoor" class="ex-dynamic-fields" style="display:none">
+      <div style="font-size:11px;color:var(--blue);margin-bottom:10px;padding:8px;border-radius:var(--r-sm);background:rgba(61,142,232,.08);border:1px solid rgba(61,142,232,.15)">📱 Ingresa los datos de Strava: tiempo, distancia y calorías si aparecen.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="input-group"><label class="input-label">Duración (min)</label><input class="input" type="number" id="ex-out-mins" placeholder="40"></div>
+        <div class="input-group"><label class="input-label">Distancia (km)</label><input class="input" type="number" id="ex-out-km" placeholder="5.0" step="0.1"></div>
+        <div class="input-group"><label class="input-label">kcal (Strava)</label><input class="input" type="number" id="ex-out-kcal" placeholder="Opcional"></div>
+        <div class="input-group"><label class="input-label">Pasos (opc.)</label><input class="input" type="number" id="ex-out-steps" placeholder="6000"></div>
+      </div>
+    </div>
+    <div id="ex-fields-pesas" class="ex-dynamic-fields" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="input-group"><label class="input-label">Duración (min)</label><input class="input" type="number" id="ex-pesas-mins" placeholder="45"></div>
+        <div class="input-group"><label class="input-label">kcal estimadas</label><input class="input" type="number" id="ex-pesas-kcal" placeholder="Auto ~6/min"></div>
+      </div>
+    </div>
+    <div id="ex-fields-otro" class="ex-dynamic-fields" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="input-group"><label class="input-label">Duración (min)</label><input class="input" type="number" id="ex-otro-mins" placeholder="30"></div>
+        <div class="input-group"><label class="input-label">kcal (opc.)</label><input class="input" type="number" id="ex-otro-kcal" placeholder="Auto ~7/min"></div>
+        <div class="input-group"><label class="input-label">Distancia km (opc.)</label><input class="input" type="number" id="ex-otro-km" placeholder="" step="0.1"></div>
+        <div class="input-group"><label class="input-label">Pasos (opc.)</label><input class="input" type="number" id="ex-otro-steps" placeholder=""></div>
+      </div>
+    </div>
+    <!-- Estimated result preview -->
+    <div id="ex-estimate-preview" style="display:none;margin-top:6px;padding:10px;border-radius:var(--r-md);background:rgba(46,204,113,.08);border:2px solid rgba(46,204,113,.2);text-align:center">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Calorías estimadas</div>
+      <div class="comic-num" style="font-size:28px;color:var(--green)" id="ex-estimate-val">0 kcal</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:12px">
       <button class="btn btn-secondary" style="flex:1" onclick="closeModal('ex-input-modal')">Cancelar</button>
-      <button class="btn btn-primary" style="flex:2" onclick="saveExActivity()">Guardar</button>
+      <button class="btn btn-green" style="flex:2" onclick="saveExActivity()">💪 Guardar</button>
     </div>
   </div>
 </div>
@@ -948,11 +1007,8 @@ const state = {
   completedEx: load(`sa_ex_${todayKey()}`, []),
   activities: load(`sa_activities_${todayKey()}`, []),
   pendingMeal: null,
-  selectedFood: null,
+  pendingDescribedMeal: null,
   barcodeFood: null,
-  searchTab: 'products',
-  _lastFilteredResults: [],
-  _lastOnlineResults: [],
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -1079,7 +1135,6 @@ const catIcons={alimentacion:'🍽',transporte:'🚗',salud:'💊',estudio:'📚
 const catColors={alimentacion:'#E8920A',transporte:'#3D8EE8',salud:'#2ECC71',estudio:'#8B5CF6',suscripcion:'#FF6B5B',otros:'#94A3B8'};
 const mealIcons={desayuno:'☀️',almuerzo:'🍽',once:'🫖',cena:'🌙',snack:'🍎'};
 const mealTimeLabels={desayuno:'Desayuno',almuerzo:'Almuerzo',once:'Once / Merienda',cena:'Cena',snack:'Snack'};
-const kcalRates={caminar:5,correr:11,bicicleta:8,pesas:6,natacion:10,otro:7};
 
 // ═══════════════════════════════════════════════════════════════
 // NAVIGATION
@@ -1186,137 +1241,144 @@ function deleteMeal(id) { state.meals = state.meals.filter(m=>m.id!==id); save(`
 function clearMealForm() { ['meal-name-input','meal-cal-input','meal-qty-input','meal-protein-input','meal-carbs-input','meal-fat-input','meal-fiber-input'].forEach(id => { const el=document.getElementById(id); if(el)el.value=''; }); }
 
 // ═══════════════════════════════════════════════════════════════
-// FOOD SEARCH (Local + Open Food Facts API)
+// DESCRIBE MEAL (AI Text Analyzer via Claude API)
 // ═══════════════════════════════════════════════════════════════
-function openFoodSearchModal() {
-  document.getElementById('food-search-input').value = '';
-  document.getElementById('food-search-results').classList.remove('show');
-  document.getElementById('food-search-selected').style.display = 'none';
-  state.selectedFood = null;
-  openModal('food-search-modal');
-  setTimeout(() => document.getElementById('food-search-input').focus(), 300);
+function openDescribeMealModal() {
+  document.getElementById('meal-describe-input').value = '';
+  document.getElementById('describe-loading').style.display = 'none';
+  document.getElementById('describe-result').style.display = 'none';
+  document.getElementById('describe-btns').style.display = 'block';
+  state.pendingDescribedMeal = null;
+  openModal('describe-meal-modal');
+  setTimeout(() => document.getElementById('meal-describe-input').focus(), 300);
 }
 
-function switchSearchTab(el, tab) {
-  document.querySelectorAll('#food-search-modal .search-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  state.searchTab = tab;
-  const input = document.getElementById('food-search-input');
-  if (tab === 'products') input.placeholder = 'Ej: Yoghurt Soprole, Monster Energy...';
-  else if (tab === 'dishes') input.placeholder = 'Ej: Lasagna, Cazuela, Empanada...';
-  else input.placeholder = 'Buscar en OpenFoodFacts (Chile)...';
-  searchFood(input.value);
+function resetDescribeMeal() {
+  document.getElementById('describe-result').style.display = 'none';
+  document.getElementById('describe-btns').style.display = 'block';
+  document.getElementById('describe-loading').style.display = 'none';
+  state.pendingDescribedMeal = null;
 }
 
-function searchFood(query) {
-  const results = document.getElementById('food-search-results');
-  if (!query || query.length < 2) { results.classList.remove('show'); return; }
-  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  if (state.searchTab === 'online') { searchOnline(query); return; }
-  const source = state.searchTab === 'dishes' ? foodDB.dishes : foodDB.products;
-  // Accent-insensitive search across name, brand, and portion
-  const normalize = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const words = q.split(/\s+/).filter(w => w.length > 1);
-  const filtered = source.filter(f => {
-    const haystack = normalize(f.name) + ' ' + normalize(f.brand) + ' ' + normalize(f.portion);
-    return words.every(w => haystack.includes(w));
-  });
-  if (!filtered.length) {
-    results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">No encontrado. Prueba búsqueda online o ingreso manual.</div>`;
-    results.classList.add('show'); return;
+async function analyzeDescription() {
+  const text = document.getElementById('meal-describe-input').value.trim();
+  if (!text || text.length < 10) { toast('Describe tu comida con más detalle'); return; }
+  const apiKey = state.apiKey;
+  const loading = document.getElementById('describe-loading');
+  const resultDiv = document.getElementById('describe-result');
+  const btnsDiv = document.getElementById('describe-btns');
+  
+  loading.style.display = 'flex';
+  btnsDiv.style.display = 'none';
+  resultDiv.style.display = 'none';
+
+  if (!apiKey) {
+    loading.style.display = 'none';
+    btnsDiv.style.display = 'block';
+    toast('Configura tu API Key de Anthropic en ⚙️ Ajustes');
+    return;
   }
-  // Store filtered results for safe selection by index
-  state._lastFilteredResults = filtered.slice(0,10);
-  results.innerHTML = state._lastFilteredResults.map((f,i) => `
-    <div class="search-result-item" onclick="selectLocalFood(${i})">
-      <div class="sr-icon">${f.icon||'🍽'}</div>
-      <div class="sr-info"><div class="sr-name">${escHtml(f.name)}${f.brand ? ` <span style="color:var(--text3)">(${f.brand})</span>` : ''}</div><div class="sr-detail">${f.portion} · P:${f.protein}g C:${f.carbs}g G:${f.fat}g</div></div>
-      <div class="sr-cal">${f.cal} kcal</div>
-    </div>`).join('');
-  results.classList.add('show');
-}
 
-// Debounce for online search
-let _onlineSearchTimer = null;
-
-async function searchOnline(query) {
-  const results = document.getElementById('food-search-results');
-  // Debounce: wait 400ms after last keystroke before fetching
-  clearTimeout(_onlineSearchTimer);
-  _onlineSearchTimer = setTimeout(() => _doSearchOnline(query), 400);
-  results.innerHTML = `<div style="padding:16px;text-align:center"><div class="spin" style="margin:0 auto 8px;width:24px;height:24px;border-width:2px"></div><span style="font-size:12px;color:var(--text3)">Buscando en OpenFoodFacts...</span></div>`;
-  results.classList.add('show');
-}
-
-async function _doSearchOnline(query) {
-  const results = document.getElementById('food-search-results');
   try {
-    // Use cc=cl for Chile + lc=es for Spanish labels
-    const res = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10&cc=cl&lc=es`);
-    const data = await res.json();
-    const products = (data.products || []).filter(p => p.product_name && p.nutriments);
-    if (!products.length) {
-      results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Sin resultados para "${escHtml(query)}". Prueba otro término.</div>`;
-      return;
-    }
-    // Store for safe selection
-    state._lastOnlineResults = products.map(p => {
-      const n = p.nutriments;
-      return {
-        name: p.product_name || 'Producto',
-        brand: p.brands || '',
-        cal: Math.round(n['energy-kcal_100g']||n['energy-kcal']||0),
-        protein: Math.round(n.proteins_100g||0),
-        carbs: Math.round(n.carbohydrates_100g||0),
-        fat: Math.round(n.fat_100g||0),
-        fiber: Math.round(n.fiber_100g||0),
-        portion: p.serving_size || '100g',
-        image: p.image_small_url || ''
-      };
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:1024,
+        messages:[{role:'user',content:
+`Eres un nutricionista experto. El usuario en Chile describe lo que comió. Analiza cada alimento mencionado y calcula los valores nutricionales con la mayor precisión posible.
+
+Descripción del usuario: "${text}"
+
+IMPORTANTE:
+- Usa porciones y marcas chilenas si las menciona (Bimbo, Soprole, Colun, etc.)
+- Si dice "un plato" o "una porción", usa porciones estándar chilenas
+- Sé conservador pero realista en las estimaciones
+- Si dice "batido de proteína" sin marca, asume 1 scoop estándar (30g, ~120kcal, 24g proteína)
+- Separa cada alimento individual para que el usuario vea el desglose
+
+Responde SOLO con JSON válido, sin texto adicional:
+{
+  "items": [
+    {"name": "nombre del alimento", "qty": "cantidad/porción", "cal": numero, "protein": numero, "carbs": numero, "fat": numero, "fiber": numero}
+  ],
+  "totals": {"cal": numero, "protein": numero, "carbs": numero, "fat": numero, "fiber": numero},
+  "meal_name": "resumen corto de la comida en 3-5 palabras"
+}`
+        }]
+      })
     });
-    results.innerHTML = state._lastOnlineResults.map((f,i) => `
-      <div class="search-result-item" onclick="selectOnlineByIndex(${i})">
-        <div class="sr-icon">${f.image ? `<img src="${f.image}" style="width:32px;height:32px;border-radius:4px;object-fit:cover" onerror="this.outerHTML='🌐'">` : '🌐'}</div>
-        <div class="sr-info"><div class="sr-name">${escHtml(f.name)}</div><div class="sr-detail">${escHtml(f.brand)} · ${f.portion} · P:${f.protein}g C:${f.carbs}g G:${f.fat}g</div></div>
-        <div class="sr-cal">${f.cal} kcal</div>
-      </div>`).join('');
-  } catch(e) {
-    results.innerHTML = `<div style="padding:16px;text-align:center;color:var(--red);font-size:13px">Error de conexión. Revisa tu internet.</div>`;
+    const data = await res.json();
+    const rawText = data.content?.[0]?.text || '';
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+    const parsed = JSON.parse(jsonMatch[0]);
+    displayDescribedMeal(parsed);
+  } catch(err) {
+    loading.style.display = 'none';
+    btnsDiv.style.display = 'block';
+    toast('Error al analizar. Revisa tu conexión o API Key.');
+    console.error('Describe meal error:', err);
   }
 }
 
-// Safe selection by index (no more JSON in onclick attrs)
-function selectLocalFood(idx) {
-  const food = (state._lastFilteredResults || [])[idx];
-  if (!food) return;
-  state.selectedFood = {...food};
-  showSelectedFood(food);
-}
-function selectOnlineByIndex(idx) {
-  const food = (state._lastOnlineResults || [])[idx];
-  if (!food) return;
-  state.selectedFood = {...food};
-  showSelectedFood(food);
+function displayDescribedMeal(data) {
+  document.getElementById('describe-loading').style.display = 'none';
+  const t = data.totals || {};
+  const items = data.items || [];
+  
+  // Show items
+  document.getElementById('describe-items').innerHTML = items.map(item => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2);font-size:12px">
+      <div style="flex:1;min-width:0">
+        <div style="color:var(--text);font-weight:500">${escHtml(item.name)}</div>
+        <div style="color:var(--text3);font-size:10px;margin-top:1px">${escHtml(item.qty||'')} · P:${item.protein||0}g C:${item.carbs||0}g G:${item.fat||0}g</div>
+      </div>
+      <div class="comic-num" style="font-size:14px;color:var(--accent);white-space:nowrap;margin-left:8px">${item.cal||0}</div>
+    </div>
+  `).join('');
+  
+  // Totals
+  document.getElementById('desc-total-cal').textContent = Math.round(t.cal||0) + ' kcal';
+  document.getElementById('desc-p').textContent = Math.round(t.protein||0) + 'g';
+  document.getElementById('desc-c').textContent = Math.round(t.carbs||0) + 'g';
+  document.getElementById('desc-f').textContent = Math.round(t.fat||0) + 'g';
+  document.getElementById('desc-fb').textContent = Math.round(t.fiber||0) + 'g';
+  
+  state.pendingDescribedMeal = {
+    name: data.meal_name || items.map(i=>i.name).join(', '),
+    items: items,
+    ...t
+  };
+  
+  document.getElementById('describe-result').style.display = 'block';
 }
 
-function showSelectedFood(food) {
-  document.getElementById('food-search-results').classList.remove('show');
-  document.getElementById('food-search-selected').style.display = 'block';
-  document.getElementById('fs-sel-name').textContent = food.name;
-  document.getElementById('fs-sel-cal').textContent = food.cal + ' kcal';
-  document.getElementById('fs-sel-p').textContent = food.protein + 'g';
-  document.getElementById('fs-sel-c').textContent = food.carbs + 'g';
-  document.getElementById('fs-sel-f').textContent = food.fat + 'g';
-  document.getElementById('fs-sel-fb').textContent = (food.fiber||0) + 'g';
-}
-
-function addSearchedFood() {
-  const f = state.selectedFood; if (!f) return;
-  const meal = { id:Date.now().toString(), name:f.name, time:document.getElementById('food-search-time').value,
-    cal:f.cal, protein:f.protein, carbs:f.carbs, fat:f.fat, fiber:f.fiber||0 };
-  state.meals.push(meal); save(`sa_meals_${todayKey()}`, state.meals);
-  closeModal('food-search-modal'); updateNutrition(); toast(`${f.name} agregado`);
-  state.selectedFood = null;
+function addDescribedMeal() {
+  const pm = state.pendingDescribedMeal;
+  if (!pm) return;
+  const time = document.getElementById('meal-describe-time').value;
+  
+  // Add each item as a separate meal entry for detailed tracking
+  pm.items.forEach(item => {
+    const meal = {
+      id: Date.now().toString() + Math.random().toString(36).slice(2,6),
+      name: item.name,
+      time: time,
+      cal: item.cal || 0,
+      protein: item.protein || 0,
+      carbs: item.carbs || 0,
+      fat: item.fat || 0,
+      fiber: item.fiber || 0
+    };
+    state.meals.push(meal);
+  });
+  
+  save(`sa_meals_${todayKey()}`, state.meals);
+  closeModal('describe-meal-modal');
+  updateNutrition();
+  toast(`${pm.items.length} alimentos agregados ✓`);
+  state.pendingDescribedMeal = null;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1654,23 +1716,97 @@ function updateExStats() {
   document.getElementById('ex-mins').textContent = totalMins;
 }
 
-function openExInputModal() { openModal('ex-input-modal'); }
+function openExInputModal() {
+  // Reset all fields
+  document.querySelectorAll('#ex-input-modal input[type="number"]').forEach(el => el.value = '');
+  document.getElementById('ex-act-type').value = 'bici_estatica';
+  updateExFields();
+  openModal('ex-input-modal');
+}
+
+function updateExFields() {
+  const type = document.getElementById('ex-act-type').value;
+  // Hide all dynamic field groups
+  document.querySelectorAll('.ex-dynamic-fields').forEach(el => el.style.display = 'none');
+  document.getElementById('ex-estimate-preview').style.display = 'none';
+  // Show relevant fields
+  if (type === 'bici_estatica') document.getElementById('ex-fields-bici').style.display = 'block';
+  else if (type === 'trotadora') document.getElementById('ex-fields-trotadora').style.display = 'block';
+  else if (type === 'caminata_outdoor' || type === 'trote_outdoor') document.getElementById('ex-fields-outdoor').style.display = 'block';
+  else if (type === 'pesas') document.getElementById('ex-fields-pesas').style.display = 'block';
+  else document.getElementById('ex-fields-otro').style.display = 'block';
+}
+
+// kcal estimation rates per minute
+const kcalRatesDetailed = {
+  bici_estatica: { light: 6, moderate: 8.5, intense: 11 },
+  trotadora_base: 10,  // ~10 kcal/min at moderate speed, adjusted by speed
+  caminata_outdoor: 5,
+  trote_outdoor: 11,
+  pesas: 6,
+  otro: 7
+};
 
 function saveExActivity() {
   const type = document.getElementById('ex-act-type').value;
-  const mins = parseInt(document.getElementById('ex-act-mins').value) || 0;
-  if (!mins) { toast('Ingresa la duración'); return; }
-  const steps = parseInt(document.getElementById('ex-act-steps').value) || 0;
-  const km = parseFloat(document.getElementById('ex-act-km').value) || 0;
-  let kcal = parseInt(document.getElementById('ex-act-kcal').value) || 0;
-  if (!kcal) kcal = Math.round(mins * (kcalRates[type] || 7));
-  const activity = { id:Date.now().toString(), type, mins, steps, km, kcal };
+  let mins = 0, km = 0, steps = 0, kcal = 0, label = '';
+
+  if (type === 'bici_estatica') {
+    mins = parseInt(document.getElementById('ex-bici-mins').value) || 0;
+    if (!mins) { toast('Ingresa la duración'); return; }
+    const intensity = document.getElementById('ex-bici-intensity').value;
+    const rate = kcalRatesDetailed.bici_estatica[intensity] || 8.5;
+    kcal = Math.round(mins * rate);
+    label = `🚴 Bici estática ${mins}min (${intensity === 'light' ? 'suave' : intensity === 'intense' ? 'intensa' : 'moderada'})`;
+  }
+  else if (type === 'trotadora') {
+    mins = parseInt(document.getElementById('ex-trot-mins').value) || 0;
+    if (!mins) { toast('Ingresa la duración'); return; }
+    km = parseFloat(document.getElementById('ex-trot-km').value) || 0;
+    kcal = parseInt(document.getElementById('ex-trot-kcal').value) || 0;
+    const speed = parseFloat(document.getElementById('ex-trot-speed').value) || 0;
+    if (!kcal) {
+      // Estimate: ~1 kcal per kg per km, assuming ~75kg. Or use speed-based rate
+      const rate = speed > 8 ? 12 : speed > 6 ? 10 : speed > 4 ? 7 : 5;
+      kcal = Math.round(mins * rate);
+    }
+    label = `🏃 Trotadora ${mins}min${km ? ' · '+km+'km' : ''}${speed ? ' · '+speed+'km/h' : ''}`;
+  }
+  else if (type === 'caminata_outdoor' || type === 'trote_outdoor') {
+    mins = parseInt(document.getElementById('ex-out-mins').value) || 0;
+    if (!mins) { toast('Ingresa la duración'); return; }
+    km = parseFloat(document.getElementById('ex-out-km').value) || 0;
+    kcal = parseInt(document.getElementById('ex-out-kcal').value) || 0;
+    steps = parseInt(document.getElementById('ex-out-steps').value) || 0;
+    if (!kcal) {
+      const rate = type === 'trote_outdoor' ? 11 : 5;
+      kcal = Math.round(mins * rate);
+    }
+    const emoji = type === 'trote_outdoor' ? '🏃‍♂️' : '🚶';
+    const actLabel = type === 'trote_outdoor' ? 'Trote' : 'Caminata';
+    label = `${emoji} ${actLabel} outdoor ${mins}min${km ? ' · '+km+'km' : ''}`;
+  }
+  else if (type === 'pesas') {
+    mins = parseInt(document.getElementById('ex-pesas-mins').value) || 0;
+    if (!mins) { toast('Ingresa la duración'); return; }
+    kcal = parseInt(document.getElementById('ex-pesas-kcal').value) || Math.round(mins * 6);
+    label = `🏋️ Pesas ${mins}min`;
+  }
+  else {
+    mins = parseInt(document.getElementById('ex-otro-mins').value) || 0;
+    if (!mins) { toast('Ingresa la duración'); return; }
+    kcal = parseInt(document.getElementById('ex-otro-kcal').value) || Math.round(mins * 7);
+    km = parseFloat(document.getElementById('ex-otro-km').value) || 0;
+    steps = parseInt(document.getElementById('ex-otro-steps').value) || 0;
+    label = `⚡ Actividad ${mins}min`;
+  }
+
+  const activity = { id:Date.now().toString(), type, mins, steps, km, kcal, label };
   state.activities.push(activity);
   save(`sa_activities_${todayKey()}`, state.activities);
   closeModal('ex-input-modal');
-  ['ex-act-mins','ex-act-steps','ex-act-km','ex-act-kcal'].forEach(id => document.getElementById(id).value = '');
   updateExStats(); updateNutrition();
-  toast(`${mins} min de ${type} registrados`);
+  toast(`${label} — ${kcal} kcal 🔥`);
 }
 
 // ═══════════════════════════════════════════════════════════════
