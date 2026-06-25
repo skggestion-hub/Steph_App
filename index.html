@@ -3,724 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hotel Las Vicuñas · Centro de Financiamiento CORFO 2026</title>
+<title>Vicuñas Stellar · Postulación Innova Región Turismo 2026</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Outfit:wght@300;400;500;600;700&display=swap');
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0E1117;
-    --bg-soft: #161B24;
-    --card: #1A212C;
-    --card-hover: #212A38;
-    --border: #2A3543;
-    --border-soft: #232D3A;
-    --text: #E8EDF4;
-    --text-mut: #8B98A8;
-    --text-dim: #5D6B7C;
-    --terra: #E08A4F;
-    --terra-glow: #F0A060;
-    --gold: #E0B341;
-    --green: #3DBC8A;
-    --blue: #5B9BD5;
-    --red: #E2604F;
-    --purple: #9B7FE0;
-    --andes: #C8845A;
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,600&family=Outfit:wght@300;400;500;600;700&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0D1017;--panel:#161C26;--card:#1B2330;--card2:#212B3A;--border:#2A3645;--line:#222C3A;
+    --tx:#E9EEF5;--mut:#8A98AB;--dim:#5C6B7E;
+    --terra:#E08A4F;--terraG:#F0A65F;--gold:#E0B341;--green:#3FBE8C;--blue:#5FA0DA;--red:#E2604F;--purple:#9D82E2;
   }
-
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(224,138,79,0.10), transparent),
-      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(91,155,213,0.06), transparent);
-  }
-
-  /* ───────── HEADER ───────── */
-  .hero {
-    position: relative;
-    padding: 56px 32px 40px;
-    text-align: center;
-    border-bottom: 1px solid var(--border-soft);
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image: repeating-linear-gradient(115deg, transparent, transparent 60px, rgba(224,138,79,0.025) 60px, rgba(224,138,79,0.025) 61px);
-    pointer-events: none;
-  }
-  .hero-mountain {
-    position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
-    width: 110%; height: 70px; opacity: 0.35; pointer-events: none;
-  }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--terra); margin-bottom: 18px;
-    padding: 6px 16px; border: 1px solid rgba(224,138,79,0.3); border-radius: 30px;
-    background: rgba(224,138,79,0.06);
-  }
-  .hero h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(30px, 5.5vw, 58px);
-    font-weight: 900; line-height: 1.05; letter-spacing: -1px;
-    margin-bottom: 12px;
-  }
-  .hero h1 .accent { color: var(--terra); font-style: italic; }
-  .hero-sub {
-    font-size: clamp(14px, 2vw, 17px); color: var(--text-mut);
-    max-width: 680px; margin: 0 auto;
-  }
-  .hero-meta {
-    display: flex; gap: 28px; justify-content: center; flex-wrap: wrap;
-    margin-top: 28px; position: relative; z-index: 2;
-  }
-  .hero-meta-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-  .hero-meta-val { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; color: var(--terra-glow); }
-  .hero-meta-lbl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; }
-
-  /* ───────── TODAY BANNER ───────── */
-  .today-banner {
-    max-width: 1180px; margin: 24px auto 0; padding: 0 24px;
-  }
-  .today-inner {
-    background: linear-gradient(100deg, rgba(226,96,79,0.14), rgba(224,179,65,0.10));
-    border: 1px solid rgba(226,96,79,0.35);
-    border-radius: 14px; padding: 18px 24px;
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-  }
-  .today-pulse {
-    width: 12px; height: 12px; border-radius: 50%; background: var(--red);
-    box-shadow: 0 0 0 0 rgba(226,96,79,0.6); animation: pulse 2s infinite; flex-shrink: 0;
-  }
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(226,96,79,0.6); }
-    70% { box-shadow: 0 0 0 12px rgba(226,96,79,0); }
-    100% { box-shadow: 0 0 0 0 rgba(226,96,79,0); }
-  }
-  .today-text { font-size: 14px; flex: 1; min-width: 240px; }
-  .today-text strong { color: var(--terra-glow); }
-
-  /* ───────── CONTROLS ───────── */
-  .controls {
-    max-width: 1180px; margin: 28px auto 0; padding: 0 24px;
-    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-  }
-  .filter-label {
-    font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px;
-    margin-right: 4px;
-  }
-  .chip {
-    font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
-    padding: 8px 16px; border-radius: 30px; cursor: pointer;
-    background: var(--card); border: 1px solid var(--border); color: var(--text-mut);
-    transition: all 0.18s;
-  }
-  .chip:hover { border-color: var(--terra); color: var(--text); }
-  .chip.active { background: var(--terra); border-color: var(--terra); color: #1A1009; font-weight: 600; }
-  .chip .count { opacity: 0.6; margin-left: 4px; font-size: 11px; }
-
-  /* ───────── GRID ───────── */
-  .grid {
-    max-width: 1180px; margin: 28px auto 64px; padding: 0 24px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px;
-  }
-
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; overflow: hidden; position: relative;
-    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-    display: flex; flex-direction: column;
-  }
-  .card:hover {
-    transform: translateY(-3px); border-color: var(--terra);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-  }
-  .card.closed { opacity: 0.55; }
-  .card.closed:hover { transform: none; border-color: var(--border); box-shadow: none; }
-
-  .card-stripe { height: 4px; width: 100%; }
-
-  .card-body { padding: 22px 22px 0; flex: 1; }
-
-  .card-top {
-    display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
-    margin-bottom: 12px;
-  }
-  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-  .tag {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
-    padding: 3px 9px; border-radius: 8px;
-  }
-  .tag-regional { background: rgba(224,138,79,0.15); color: var(--terra-glow); border: 1px solid rgba(224,138,79,0.3); }
-  .tag-nacional { background: rgba(91,155,213,0.15); color: var(--blue); border: 1px solid rgba(91,155,213,0.3); }
-
-  .urgency {
-    font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
-    white-space: nowrap; display: flex; align-items: center; gap: 5px;
-  }
-  .urg-critical { background: rgba(226,96,79,0.18); color: var(--red); }
-  .urg-soon { background: rgba(224,179,65,0.16); color: var(--gold); }
-  .urg-open { background: rgba(61,188,138,0.15); color: var(--green); }
-  .urg-future { background: rgba(155,127,224,0.15); color: var(--purple); }
-  .urg-closed { background: rgba(93,107,124,0.2); color: var(--text-dim); }
-
-  .card h3 {
-    font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
-    line-height: 1.2; margin-bottom: 10px;
-  }
-  .card-desc { font-size: 13.5px; color: var(--text-mut); margin-bottom: 16px; }
-
-  .card-dates {
-    display: flex; gap: 0; margin-bottom: 16px; border: 1px solid var(--border-soft);
-    border-radius: 10px; overflow: hidden;
-  }
-  .date-box { flex: 1; padding: 10px 12px; text-align: center; }
-  .date-box:first-child { border-right: 1px solid var(--border-soft); background: rgba(61,188,138,0.05); }
-  .date-box:last-child { background: rgba(226,96,79,0.05); }
-  .date-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 2px; }
-  .date-val { font-size: 15px; font-weight: 600; font-family: 'Fraunces', serif; }
-  .date-box:first-child .date-val { color: var(--green); }
-  .date-box:last-child .date-val { color: var(--red); }
-
-  .countdown {
-    text-align: center; font-size: 12px; padding: 8px; margin-bottom: 16px;
-    border-radius: 8px; font-weight: 600;
-  }
-  .cd-urgent { background: rgba(226,96,79,0.12); color: var(--red); }
-  .cd-soon { background: rgba(224,179,65,0.12); color: var(--gold); }
-  .cd-ok { background: rgba(61,188,138,0.1); color: var(--green); }
-  .cd-future { background: rgba(155,127,224,0.1); color: var(--purple); }
-  .cd-closed { background: rgba(93,107,124,0.12); color: var(--text-dim); }
-
-  .card-benefit {
-    display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px;
-    padding: 12px 14px; background: var(--bg-soft); border-radius: 10px;
-    border: 1px solid var(--border-soft);
-  }
-  .benefit-amount { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--green); }
-  .benefit-detail { font-size: 11px; color: var(--text-mut); }
-
-  .card-section { margin-bottom: 14px; }
-  .card-section-title {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-    color: var(--text-dim); margin-bottom: 7px; display: flex; align-items: center; gap: 6px;
-  }
-  .req-list { list-style: none; }
-  .req-list li {
-    font-size: 12.5px; color: var(--text-mut); padding: 3px 0 3px 18px; position: relative;
-  }
-  .req-list li::before { content: '▸'; position: absolute; left: 2px; color: var(--terra); }
-
-  .tip-box {
-    margin: 0 22px 18px; padding: 13px 15px;
-    background: linear-gradient(100deg, rgba(224,138,79,0.08), rgba(224,179,65,0.05));
-    border: 1px solid rgba(224,138,79,0.2); border-radius: 11px;
-  }
-  .tip-box-title {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-    color: var(--terra-glow); margin-bottom: 5px; display: flex; align-items: center; gap: 6px;
-  }
-  .tip-box-text { font-size: 12.5px; color: var(--text); line-height: 1.5; }
-
-  .card-footer { padding: 0 22px 22px; margin-top: auto; }
-  .btn {
-    display: block; width: 100%; text-align: center; text-decoration: none;
-    padding: 12px; border-radius: 10px; font-weight: 600; font-size: 14px;
-    transition: all 0.18s;
-  }
-  .btn-primary { background: var(--terra); color: #1A1009; }
-  .btn-primary:hover { background: var(--terra-glow); transform: scale(1.02); }
-  .btn-disabled { background: var(--bg-soft); color: var(--text-dim); cursor: not-allowed; border: 1px solid var(--border); }
-
-  /* ───────── PROJECT MATCH ───────── */
-  .match-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px; }
-  .match {
-    font-size: 10px; padding: 3px 8px; border-radius: 7px;
-    background: rgba(91,155,213,0.12); color: var(--blue); border: 1px solid rgba(91,155,213,0.25);
-  }
-
-  /* ───────── SECTION DIVIDERS ───────── */
-  .section-head {
-    max-width: 1180px; margin: 44px auto 0; padding: 0 24px;
-  }
-  .section-head h2 {
-    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .section-head h2 .badge-n {
-    font-size: 14px; background: var(--card); border: 1px solid var(--border);
-    color: var(--text-mut); padding: 2px 12px; border-radius: 20px; font-family: 'Outfit';
-  }
-  .section-head p { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
-
-  /* ───────── CHECKLIST PANEL ───────── */
-  .panel {
-    max-width: 1180px; margin: 44px auto 0; padding: 0 24px;
-  }
-  .panel-inner {
-    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 28px 32px;
-  }
-  .panel-inner h3 {
-    font-family: 'Fraunces', serif; font-size: 22px; margin-bottom: 6px;
-  }
-  .panel-inner > p { color: var(--text-mut); font-size: 14px; margin-bottom: 20px; }
-  .check-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-  .check-item {
-    display: flex; gap: 12px; padding: 14px; background: var(--bg-soft);
-    border: 1px solid var(--border-soft); border-radius: 11px; cursor: pointer;
-    transition: all 0.16s;
-  }
-  .check-item:hover { border-color: var(--terra); }
-  .check-item.done { opacity: 0.5; }
-  .check-item.done .check-text strong { text-decoration: line-through; }
-  .check-box {
-    width: 22px; height: 22px; border: 2px solid var(--border); border-radius: 6px;
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    transition: all 0.16s; font-size: 13px;
-  }
-  .check-item.done .check-box { background: var(--green); border-color: var(--green); color: #0E1117; }
-  .check-text strong { display: block; font-size: 13.5px; margin-bottom: 2px; }
-  .check-text span { font-size: 12px; color: var(--text-dim); }
-
-  /* ───────── STRATEGY ───────── */
-  .strategy { max-width: 1180px; margin: 44px auto 0; padding: 0 24px; }
-  .strategy-inner {
-    background: linear-gradient(135deg, rgba(224,138,79,0.08), rgba(91,155,213,0.05));
-    border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px;
-  }
-  .strategy-inner h3 { font-family: 'Fraunces', serif; font-size: 22px; margin-bottom: 16px; }
-  .strategy-steps { display: flex; flex-direction: column; gap: 14px; }
-  .strat-step { display: flex; gap: 16px; align-items: flex-start; }
-  .strat-num {
-    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-    background: var(--terra); color: #1A1009; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; font-size: 15px;
-  }
-  .strat-content { font-size: 14px; }
-  .strat-content strong { color: var(--terra-glow); }
-
-  /* ───────── FOOTER ───────── */
-  footer {
-    max-width: 1180px; margin: 56px auto 0; padding: 32px 24px 48px;
-    border-top: 1px solid var(--border-soft); color: var(--text-dim); font-size: 12.5px;
-    line-height: 1.8;
-  }
-  footer strong { color: var(--text-mut); }
-  footer a { color: var(--blue); text-decoration: none; }
-
-  .hidden { display: none !important; }
-
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
-    .hero { padding: 40px 20px 32px; }
-    .hero-meta { gap: 18px; }
-  }
+  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh;
+    background-image:radial-gradient(ellipse 70% 45% at 50% -8%,rgba(224,138,79,.12),transparent),
+    radial-gradient(ellipse 50% 40% at 88% 8%,rgba(95,160,218,.07),transparent);}
+  .hero{position:relative;padding:46px 30px 34px;border-bottom:1px solid var(--line);overflow:hidden;text-align:center}
+  .hero::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(115deg,transparent,transparent 58px,rgba(224,138,79,.025) 58px,rgba(224,138,79,.025) 59px);}
+  .hero svg.mt{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:115%;height:64px;opacity:.32}
+  .stars{position:absolute;inset:0;pointer-events:none;opacity:.5}
+  .eye{position:relative;z-index:2;display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--terra);padding:5px 15px;border:1px solid rgba(224,138,79,.3);border-radius:30px;background:rgba(224,138,79,.06);margin-bottom:15px}
+  .hero h1{position:relative;z-index:2;font-family:'Fraunces',serif;font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-1px;line-height:1.04}
+  .hero h1 .ac{color:var(--terra);font-style:italic}
+  .hero .sub{position:relative;z-index:2;color:var(--mut);font-size:clamp(13px,2vw,16px);max-width:660px;margin:8px auto 0}
+  .hero .meta{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:24px;position:relative;z-index:2}
+  .hero .meta .v{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:var(--terraG)}
+  .hero .meta .l{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:1.4px}
+  .cd{max-width:1120px;margin:22px auto 0;padding:0 22px}
+  .cd-in{background:linear-gradient(100deg,rgba(226,96,79,.14),rgba(224,179,65,.10));border:1px solid rgba(226,96,79,.34);border-radius:14px;padding:16px 22px;display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+  .pulse{width:11px;height:11px;border-radius:50%;background:var(--red);box-shadow:0 0 0 0 rgba(226,96,79,.6);animation:p 2s infinite;flex-shrink:0}
+  @keyframes p{0%{box-shadow:0 0 0 0 rgba(226,96,79,.6)}70%{box-shadow:0 0 0 11px rgba(226,96,79,0)}100%{box-shadow:0 0 0 0 rgba(226,96,79,0)}}
+  .cd-in .t{font-size:14px;flex:1;min-width:230px}.cd-in .t b{color:var(--terraG)}
+  .cd-in .big{font-family:'Fraunces',serif;font-size:34px;font-weight:900;color:var(--red);line-height:1}
+  .cd-in .big small{display:block;font-family:'Outfit';font-size:10px;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+  .tabs{max-width:1120px;margin:26px auto 0;padding:0 22px;display:flex;gap:8px;flex-wrap:wrap}
+  .tab{font-size:13.5px;font-weight:500;padding:9px 17px;border-radius:11px 11px 0 0;cursor:pointer;background:var(--card);border:1px solid var(--border);border-bottom:none;color:var(--mut);transition:.16s}
+  .tab:hover{color:var(--tx)}
+  .tab.on{background:var(--terra);border-color:var(--terra);color:#1A1009;font-weight:600}
+  .wrap{max-width:1120px;margin:0 auto 60px;padding:0 22px}
+  .pane{display:none;background:var(--panel);border:1px solid var(--border);border-radius:0 14px 14px 14px;padding:28px 30px}
+  .pane.on{display:block;animation:f .25s ease}
+  @keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2.s{font-family:'Fraunces',serif;font-size:23px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  .pane>p.intro{color:var(--mut);font-size:14px;margin-bottom:20px}
+  h3.s{font-family:'Fraunces',serif;font-size:16px;color:var(--terraG);margin:22px 0 10px}
+  .docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+  .doc{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;display:flex;flex-direction:column;transition:.18s}
+  .doc:hover{border-color:var(--terra);transform:translateY(-2px)}
+  .doc .stripe{height:4px}
+  .doc .bd{padding:16px 17px;flex:1}
+  .doc .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+  .doc h4{font-family:'Fraunces',serif;font-size:16px;line-height:1.2}
+  .st{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+  .st.ok{background:rgba(63,190,140,.16);color:var(--green)}
+  .st.draft{background:rgba(224,179,65,.16);color:var(--gold)}
+  .st.todo{background:rgba(93,107,124,.2);color:var(--dim)}
+  .doc p.d{font-size:12.5px;color:var(--mut)}
+  .doc .req{font-size:11px;color:var(--dim);margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+  .doc .ft{padding:0 17px 16px}
+  .btn{display:block;text-align:center;text-decoration:none;padding:9px;border-radius:9px;font-weight:600;font-size:13px;transition:.16s}
+  .btn.p{background:var(--terra);color:#1A1009}.btn.p:hover{background:var(--terraG)}
+  .btn.g{background:var(--card2);color:var(--dim);border:1px solid var(--border);cursor:default}
+  .prog{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px 20px;margin-bottom:22px}
+  .prog .bar{height:10px;background:var(--card2);border-radius:6px;overflow:hidden;margin:10px 0 6px}
+  .prog .fill{height:100%;background:linear-gradient(90deg,var(--terra),var(--gold));border-radius:6px;transition:width .6s}
+  .prog .lab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mut)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+  th{background:var(--card2);color:var(--tx);text-align:left;padding:9px 11px;font-weight:600;font-size:12px}
+  td{padding:8px 11px;border-bottom:1px solid var(--line);color:var(--mut)}
+  td.r,th.r{text-align:right;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  .tot td{background:var(--card2);color:var(--terraG);font-weight:700}
+  .barcell{position:relative}
+  .barcell .bg{position:absolute;left:0;top:0;bottom:0;background:rgba(224,138,79,.16);border-radius:0 4px 4px 0}
+  .barcell span{position:relative}
+  .obj{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:11px 15px;margin:9px 0;font-size:13.5px}
+  .obj b{color:var(--green)}
+  .step{display:flex;gap:14px;align-items:flex-start;margin:13px 0}
+  .num{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:var(--terra);color:#1A1009;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .step .c{font-size:13.5px}.step .c b{color:var(--terraG)}
+  .tag{display:inline-block;background:rgba(95,160,218,.12);color:var(--blue);border:1px solid rgba(95,160,218,.25);border-radius:7px;padding:2px 9px;font-size:11px;margin:2px 3px 2px 0}
+  .note{background:rgba(95,160,218,.08);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:11px 15px;margin:12px 0;font-size:13px}
+  .note.warn{background:rgba(226,96,79,.08);border-left-color:var(--red)}
+  .note.gold{background:rgba(224,179,65,.08);border-left-color:var(--gold)}
+  ul.ck{list-style:none;padding:0}
+  ul.ck li{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  ul.ck li:last-child{border:none}
+  ul.ck .bx{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px}
+  ul.ck li.done .bx{background:var(--green);border-color:var(--green);color:#0D1017}
+  ul.ck li.done .tx{text-decoration:line-through;color:var(--dim)}
+  .gantt{overflow-x:auto}
+  table.gt{font-size:11px;min-width:640px}
+  table.gt td.a{text-align:left;width:30%;color:var(--tx);font-weight:500}
+  table.gt td.on{background:var(--terra)}
+  table.gt th{text-align:center;padding:6px 4px}
+  footer{max-width:1120px;margin:50px auto 0;padding:28px 22px 44px;border-top:1px solid var(--line);color:var(--dim);font-size:12.5px;line-height:1.8}
+  footer b{color:var(--mut)}footer a{color:var(--blue);text-decoration:none}
+  @media(max-width:600px){.docs{grid-template-columns:1fr}.hero{padding:34px 18px}.pane{padding:20px 18px}}
 </style>
 </head>
 <body>
-
-<!-- HERO -->
 <header class="hero">
-  <svg class="hero-mountain" viewBox="0 0 1200 70" preserveAspectRatio="none">
-    <path d="M0,70 L150,30 L280,55 L420,15 L560,45 L720,20 L880,50 L1020,25 L1200,55 L1200,70 Z" fill="var(--andes)"/>
+  <svg class="stars" viewBox="0 0 1200 220" preserveAspectRatio="none">
+    <g fill="#F0A65F"><circle cx="120" cy="40" r="1.3"/><circle cx="300" cy="70" r="1"/><circle cx="480" cy="35" r="1.5"/><circle cx="660" cy="60" r="1"/><circle cx="850" cy="30" r="1.3"/><circle cx="1010" cy="65" r="1"/><circle cx="200" cy="110" r="1"/><circle cx="560" cy="120" r="1.2"/><circle cx="920" cy="105" r="1"/><circle cx="1080" cy="40" r="1.4"/></g>
   </svg>
-  <span class="eyebrow">★ Centro de Financiamiento Familiar · CORFO 2026</span>
-  <h1>Hotel <span class="accent">Las Vicuñas</span><br>Fondos &amp; Convocatorias</h1>
-  <p class="hero-sub">Panel de trabajo familiar para postular a los fondos CORFO de la Región de Arica y Parinacota. Desde 1988 en el corazón del altiplano. Sociedad Comercial UKG y CIA Ltda.</p>
-  <div class="hero-meta">
-    <div class="hero-meta-item"><span class="hero-meta-val">38</span><span class="hero-meta-lbl">Años de historia</span></div>
-    <div class="hero-meta-item"><span class="hero-meta-val">720</span><span class="hero-meta-lbl">Huéspedes/día (auge minero)</span></div>
-    <div class="hero-meta-item"><span class="hero-meta-val">3.550</span><span class="hero-meta-lbl">m.s.n.m. · Putre</span></div>
-    <div class="hero-meta-item"><span class="hero-meta-val" id="open-count">—</span><span class="hero-meta-lbl">Fondos postulables hoy</span></div>
+  <svg class="mt" viewBox="0 0 1200 64" preserveAspectRatio="none"><path d="M0,64 L140,26 L270,50 L410,12 L560,42 L720,18 L880,46 L1030,22 L1200,50 L1200,64 Z" fill="#C8845A"/></svg>
+  <span class="eye">★ Postulación CORFO · Innova Región Turismo 2026</span>
+  <h1>Vicuñas <span class="ac">Stellar</span></h1>
+  <p class="sub">Centro de trabajo familiar para la postulación a <b>Innova Región (Turismo)</b>. Astroturismo de altiplano en el Hotel Las Vicuñas, Putre — desde 1988 en el corazón de Arica y Parinacota.</p>
+  <div class="meta">
+    <div><div class="v">$52M</div><div class="l">Proyecto total</div></div>
+    <div><div class="v">80%</div><div class="l">Cofinancia CORFO</div></div>
+    <div><div class="v">Turismo</div><div class="l">Eje regional</div></div>
+    <div><div class="v">4–6</div><div class="l">Empleos proyectados</div></div>
   </div>
 </header>
-
-<!-- TODAY BANNER -->
-<div class="today-banner">
-  <div class="today-inner">
-    <div class="today-pulse"></div>
-    <div class="today-text">
-      <strong>⏱ HOY es 24 de junio de 2026.</strong> El fondo más afín al hotel — <strong>Innova Región (Turismo)</strong> — cierra el <strong>26/06</strong>, en solo 2 días. Si no alcanzan a postular en ese plazo, las prioridades inmediatas pasan a ser <strong>Gestión de Innovación en Pymes</strong> (cierra 15/07) y las <strong>Redes Asociativas</strong> de Turismo.
+<div class="cd"><div class="cd-in">
+  <div class="pulse"></div>
+  <div class="t"><b>⏱ Cierre de postulación: 26 de junio de 2026, 15:00 hrs.</b> Hoy es 24/06/2026. El plazo es muy ajustado: se recomienda contactar HOY a un Agente Operador y priorizar el envío del formulario en línea con los documentos base. La etapa de evaluación corre del 29/06 al 06/08.</div>
+  <div style="text-align:center"><div class="big" id="days">2</div><small>días restantes</small></div>
+</div></div>
+<nav class="tabs" id="tabs">
+  <div class="tab on" data-p="resumen">Resumen</div>
+  <div class="tab" data-p="docs">Documentos</div>
+  <div class="tab" data-p="presup">Presupuesto</div>
+  <div class="tab" data-p="proyecto">Proyecto</div>
+  <div class="tab" data-p="crono">Cronograma</div>
+  <div class="tab" data-p="plan">Plan de acción</div>
+</nav>
+<div class="wrap">
+  <section class="pane on" id="resumen">
+    <h2 class="s">🛰️ Resumen de la postulación</h2>
+    <p class="intro">Vicuñas Stellar desarrolla y valida un nuevo producto turístico de astroturismo de altiplano, aprovechando los cielos excepcionales de Putre (3.550 m.s.n.m.) para transformar el hotel en un destino de experiencias y generar empleo en la región.</p>
+    <div class="prog">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:'Fraunces',serif;font-size:15px">Avance de la carpeta de postulación</b><span id="pct" style="color:var(--terraG);font-weight:700">—</span></div>
+      <div class="bar"><div class="fill" id="pbar" style="width:0%"></div></div>
+      <div class="lab"><span id="pdone">0 listos</span><span id="ptot"></span></div>
     </div>
-  </div>
+    <h3 class="s">Por qué este fondo</h3>
+    <table>
+      <tr><th>Atributo</th><th>Detalle</th></tr>
+      <tr><td>Instrumento</td><td>Primer Concurso Innova Región 2026 — Arica y Parinacota</td></tr>
+      <tr><td>Eje temático</td><td><span class="tag">Turismo</span> (alineado al proyecto)</td></tr>
+      <tr><td>Beneficio</td><td>Cofinancia hasta 80% (micro/pequeña) · tope $60M · +10% empresa liderada por mujer</td></tr>
+      <tr><td>Requisitos</td><td>Persona jurídica chilena · ≥18 meses de actividades · ventas demostrables 18 meses · ejecución en la región</td></tr>
+      <tr><td>Postulante</td><td>Soc. Com. UKG y CIA Ltda. — liderada por la Sra. Luz María Garrido Concha</td></tr>
+      <tr><td>Postulación</td><td>En línea (sistema CORFO) · vía Agente Operador recomendado por el plazo</td></tr>
+    </table>
+    <div class="note">El proyecto cumple los tres focos que pide la convocatoria: <b>turismo</b>, <b>creación de empleo</b> y <b>puesta en valor de la zona y la región</b> como base de la propuesta.</div>
+  </section>
+
+  <section class="pane" id="docs">
+    <h2 class="s">📄 Estado de los documentos</h2>
+    <p class="intro">Documentos exigidos por las Bases Administrativas Generales y las bases técnicas del instrumento. Los tres primeros ya están redactados como borrador de trabajo; el resto debe reunirlo la familia.</p>
+    <div class="docs" id="docgrid"></div>
+  </section>
+
+  <section class="pane" id="presup">
+    <h2 class="s">💰 Presupuesto</h2>
+    <p class="intro">Estructura de cuentas según el numeral 4.6.1 de las bases. Cofinanciamiento base 80% CORFO / 20% empresa.</p>
+    <table id="budtable"></table>
+    <h3 class="s">Composición del aporte de la empresa (20%)</h3>
+    <table>
+      <tr><th>Tipo</th><th class="r">Monto</th></tr>
+      <tr><td><span class="tag">Pecuniario</span> Efectivo nuevo (inversión y operación)</td><td class="r" id="pec"></td></tr>
+      <tr><td><span class="tag">Valorizado</span> Uso de infraestructura existente del hotel</td><td class="r" id="val"></td></tr>
+      <tr class="tot"><td>Total aporte empresa</td><td class="r" id="apt"></td></tr>
+    </table>
+    <div class="note gold"><b>Honorarios de administración (lo que pediste):</b> Stephan Krause (Director del Proyecto) y Níkolas Krause (Coordinador Técnico-Operativo) se remuneran con cargo a <b>Recursos Humanos</b> por su dedicación efectiva a la gestión, control y trazabilidad del proyecto, conforme al numeral 4.6.1 letra a) de las bases. CORFO cofinancia el 80% de esa cuenta. Por ser personas relacionadas a la empresa, esa relación se declara expresamente según el numeral 11.5.2. Las remuneraciones deben ajustarse a valores de mercado y a la dedicación comprometida.</div>
+  </section>
+
+  <section class="pane" id="proyecto">
+    <h2 class="s">🌌 El proyecto de innovación</h2>
+    <p class="intro">Un nuevo servicio turístico que integra astronomía, gastronomía andina y cultura local, llevado desde el prototipo hasta su validación técnica y comercial.</p>
+    <h3 class="s">Objetivos</h3>
+    <div class="obj"><b>General.</b> Desarrollar y validar un nuevo producto de astroturismo de altiplano que posicione a Putre y a la región como destino de turismo astronómico, diversificando la oferta del hotel y generando empleo local.</div>
+    <div class="obj"><b>OE1.</b> Diseñar y construir un prototipo de deck de observación astronómica equipado.</div>
+    <div class="obj"><b>OE2.</b> Desarrollar y validar 3 paquetes de experiencia (astronomía + gastronomía andina + cultura/naturaleza).</div>
+    <div class="obj"><b>OE3.</b> Implementar una plataforma digital de reservas, contenido y validación comercial.</div>
+    <div class="obj"><b>OE4.</b> Capacitar y certificar al equipo en guiado astroturístico y calidad turística.</div>
+    <div class="obj"><b>OE5.</b> Validar comercialmente con operación piloto y medición de demanda real.</div>
+    <h3 class="s">Equipo y empleo</h3>
+    <table>
+      <tr><th>Integrante</th><th>Rol</th></tr>
+      <tr><td>Luz María Garrido Concha</td><td>Representante legal / Gerente General</td></tr>
+      <tr><td>Stephan Krause Garrido</td><td>Director del Proyecto (Ing. Civil Industrial, MBA en curso)</td></tr>
+      <tr><td>Níkolas Krause Garrido</td><td>Coordinador Técnico-Operativo</td></tr>
+      <tr><td>Guía-anfitrión astroturismo</td><td><b style="color:var(--green)">Nuevo empleo directo</b></td></tr>
+      <tr><td>Consultor experto (externo)</td><td>Asesoría en astroturismo y experiencia</td></tr>
+    </table>
+    <div class="note">Proyección: 1 empleo directo en ejecución → 4 a 6 empleos directos al escalar, más encadenamiento con artesanos, transportistas y productores locales del altiplano.</div>
+  </section>
+
+  <section class="pane" id="crono">
+    <h2 class="s">📅 Cronograma (Carta Gantt)</h2>
+    <p class="intro">12 meses de ejecución, con actividades organizadas por resultado. La gestión, control y rendiciones son transversales conforme al numeral 11 de las bases.</p>
+    <div class="gantt"><table class="gt" id="gtable"></table></div>
+  </section>
+
+  <section class="pane" id="plan">
+    <h2 class="s">🎯 Plan de acción inmediato</h2>
+    <p class="intro">Pasos para llegar al cierre del 26/06 con la mejor postulación posible.</p>
+    <div class="step"><div class="num">1</div><div class="c"><b>Hoy:</b> Contactar a un <b>Agente Operador Intermediario</b> de CORFO Arica (lista en corfo.gob.cl/intermediario) para que apoye la postulación en línea dentro del plazo.</div></div>
+    <div class="step"><div class="num">2</div><div class="c"><b>Hoy:</b> Reunir la <b>carpeta tributaria</b> del SII y verificar ≥18 meses de actividades y ventas demostrables de los últimos 18 meses.</div></div>
+    <div class="step"><div class="num">3</div><div class="c"><b>Hoy–mañana:</b> Completar y firmar las <b>Declaraciones Juradas</b> (Anexos 1 y 3) con cédula y RUT reales. Acreditar "Empresa liderada por mujer".</div></div>
+    <div class="step"><div class="num">4</div><div class="c"><b>Hoy–mañana:</b> Cargar en el sistema el <b>Perfil del Proyecto</b> y el <b>Presupuesto</b>, ajustando montos a cotizaciones reales.</div></div>
+    <div class="step"><div class="num">5</div><div class="c"><b>Antes del 26/06 15:00:</b> Enviar la postulación. Las consultas a CORFO se reciben hasta 3 días hábiles antes del cierre (fgutierrez@corfo.cl / rherrera@corfo.cl · 58 2351650).</div></div>
+    <h3 class="s">Checklist de admisibilidad</h3>
+    <ul class="ck" id="ck"></ul>
+    <div class="note warn">Si el plazo del 26/06 resulta inalcanzable, no se pierde el trabajo: el mismo perfil sirve para <b>Gestión de Innovación en Pymes</b> (cierra 15/07) y para las <b>Redes Asociativas de Turismo</b> (cierran 22–23/07). Verificar siempre el portal de CORFO antes de postular.</div>
+  </section>
 </div>
-
-<!-- CONTROLS -->
-<div class="controls">
-  <span class="filter-label">Filtrar:</span>
-  <button class="chip active" data-filter="all">Todos</button>
-  <button class="chip" data-filter="regional">Regional Arica</button>
-  <button class="chip" data-filter="nacional">Todo Chile</button>
-  <button class="chip" data-filter="critical">Cierra pronto</button>
-  <button class="chip" data-filter="open">Postulable hoy</button>
-</div>
-
-<!-- GRID -->
-<main class="grid" id="grid"></main>
-
-<!-- ESTRATEGIA RECOMENDADA -->
-<div class="strategy">
-  <div class="strategy-inner">
-    <h3>🎯 Estrategia recomendada para la familia</h3>
-    <div class="strategy-steps">
-      <div class="strat-step">
-        <div class="strat-num">1</div>
-        <div class="strat-content"><strong>Esta semana (antes del 26/06):</strong> Evaluar con un Agente Operador si alcanzan a presentar a <strong>Innova Región Turismo</strong>. Aunque el plazo es muy ajustado, es el fondo de mayor monto ($60M, 80% cofinanciado) y el más alineado con el rubro. Si no se alcanza, no se pierde nada para los siguientes.</div>
-      </div>
-      <div class="strat-step">
-        <div class="strat-num">2</div>
-        <div class="strat-content"><strong>Antes del 15/07:</strong> Postular a <strong>Gestión de Innovación en Pymes</strong> ($7,2M por empresa). Es ideal para profesionalizar la gestión del hotel e incorporar prácticas de innovación — encaja con el plan de modernización ya trabajado.</div>
-      </div>
-      <div class="strat-step">
-        <div class="strat-num">3</div>
-        <div class="strat-content"><strong>Antes del 22-23/07:</strong> Explorar las <strong>Redes Asociativas y Red Mercados</strong> de Turismo, asociándose con otros hoteles o servicios turísticos de Putre y Arica. Requiere mínimo 3 empresas, pero permite financiar diagnóstico y mejoras de competitividad de forma conjunta.</div>
-      </div>
-      <div class="strat-step">
-        <div class="strat-num">4</div>
-        <div class="strat-content"><strong>En paralelo (todo el año):</strong> Mantener activa la postulación a <strong>SERCOTEC Crece y Capital Pioneras</strong> (ver Plan de Trabajo Integral). CORFO y SERCOTEC son complementarios y se pueden combinar.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CHECKLIST -->
-<div class="panel">
-  <div class="panel-inner">
-    <h3>✓ Preparación documental (común a todos los fondos)</h3>
-    <p>Marquen cada documento al tenerlo listo. El progreso se guarda en este navegador.</p>
-    <div class="check-grid" id="checklist"></div>
-  </div>
-</div>
-
-<!-- FOOTER -->
 <footer>
-  <strong>Hotel Las Vicuñas — Sociedad Comercial Ulrich Krause Gronwald y CIA Ltda.</strong><br>
+  <b>Hotel Las Vicuñas — Sociedad Comercial Ulrich Krause Gronwald y CIA Ltda.</b><br>
   Baquedano 80, Putre, Región de Arica y Parinacota · 3.550 m.s.n.m. · Fundado en 1988 por Don Ulrich Krause Gronwald<br>
   Gerente General: Sra. Luz María Garrido Concha · Socios: Geraldine, Stephan y Níkolas Krause Garrido<br><br>
-  <strong>CORFO Arica y Parinacota:</strong> 21 de Mayo 551, Arica · Tel: (+58) 2351650 · <a href="mailto:oficinadepartesarica@corfo.cl">oficinadepartesarica@corfo.cl</a><br>
-  <strong>Fuente de datos:</strong> <a href="https://www.corfo.gob.cl/sites/cpp/regiones/aricaparinacota/" target="_blank">corfo.gob.cl/sites/cpp/regiones/aricaparinacota</a> · Información capturada el 24/06/2026<br><br>
-  <em style="color:var(--text-dim)">Este panel es una herramienta interna de organización familiar. Los montos, plazos y condiciones están sujetos a las bases oficiales de cada convocatoria. Verificar siempre la información actualizada en el portal de CORFO antes de postular, ya que las fechas y fondos cambian periódicamente.</em>
+  <b>CORFO Arica y Parinacota:</b> 21 de Mayo 551, Arica · Tel: (+58) 2351650 · <a href="mailto:oficinadepartesarica@corfo.cl">oficinadepartesarica@corfo.cl</a><br>
+  <b>Convocatoria:</b> <a href="https://www.corfo.gob.cl/sites/cpp/convocatoria/innova-region-arica-y-parinacota-2026/" target="_blank">Innova Región Arica y Parinacota 2026</a> · datos al 24/06/2026<br><br>
+  <em style="color:var(--dim)">Panel interno de organización familiar. Los montos, plazos y condiciones están sujetos a las bases oficiales del instrumento; verificar siempre en el portal de CORFO antes de postular. En honor a Don Ulrich Krause Gronwald.</em>
 </footer>
-
 <script>
-// ─────────── DATA: Convocatorias CORFO Arica y Parinacota ───────────
-// Fecha de referencia "HOY" según el portal CORFO: 24/06/2026
-const TODAY = new Date(2026, 5, 24); // mes 5 = junio
-
-const FUNDS = [
-  {
-    id: 'innova-region',
-    nombre: 'Innova Región Arica y Parinacota',
-    alcance: 'regional',
-    stripe: 'var(--terra)',
-    desc: 'Apoya el desarrollo de nuevos o mejorados productos/servicios y procesos, desde prototipo hasta validación técnica y comercial, alineados con los ejes regionales (incluye Turismo).',
-    apertura: '05/05/2026',
-    cierre: '26/06/2026',
-    benefit: 'Hasta $60M',
-    benefitDetail: 'Cofinancia hasta 80% del proyecto (micro/pequeña empresa). +10% si es liderada por mujer.',
-    requisitos: [
-      'Persona jurídica o natural con giro de 1ª categoría',
-      'Al menos 18 meses desde inicio de actividades',
-      'Acreditar ventas en los últimos 18 meses',
-      'Proyecto debe ejecutarse e impactar en la Región',
-      'Eje temático: Turismo (entre otros)'
-    ],
-    matches: ['Turismo', 'Innovación', 'Nuevos servicios'],
-    tip: 'El eje "Turismo" calza perfecto. BigNik (hamburguesería-pub andina) o un nuevo servicio de astroturismo/experiencias en el altiplano son "nuevos servicios" innovadores. Es el fondo de mayor monto y mejor alineado. Cierra en 2 días: contactar HOY a un Agente Operador.',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/innova-region-arica-y-parinacota-2026/'
-  },
-  {
-    id: 'red-asociativa-diag',
-    nombre: 'Red Asociativa Arica · Etapa Diagnóstico (2ª Conv.)',
-    alcance: 'regional',
-    stripe: 'var(--gold)',
-    desc: 'Instrumento "Redes" para aumentar la competitividad de empresas de forma asociativa, financiando mejoras en gestión, productividad, sustentabilidad e innovación. Etapa de diagnóstico.',
-    apertura: '23/06/2026',
-    cierre: '23/07/2026',
-    benefit: 'Hasta $8M',
-    benefitDetail: 'Cofinancia hasta 70% de la etapa de diagnóstico. Mínimo 3 empresas asociadas.',
-    requisitos: [
-      'Contribuyentes de 1ª categoría',
-      'Mínimo 3 beneficiarios asociados',
-      'Ventas netas anuales individuales ≥ 2.400 UF',
-      'Eje temático: Turismo (entre otros)',
-      'Se postula vía Agente Operador Intermediario'
-    ],
-    matches: ['Turismo', 'Asociatividad', 'Competitividad'],
-    tip: 'Asociarse con otros hoteles, restaurantes o agencias de turismo de Putre/Arica para diagnosticar en conjunto las brechas del sector turístico altiplánico. Buen primer paso si se quiere acceder luego a la etapa de Desarrollo (que financia las mejoras reales).',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/red-asociativa-arica-2-convocatoria-etapa-diagnostico-2026/'
-  },
-  {
-    id: 'gestion-innovacion',
-    nombre: 'Gestión de Innovación en Pymes',
-    alcance: 'nacional',
-    stripe: 'var(--blue)',
-    desc: 'Fortalece las capacidades de innovación de las Pymes, fomentando una cultura de innovación, colaboración y rutinas sistemáticas de gestión de proyectos de innovación productiva y tecnológica.',
-    apertura: '19/05/2026',
-    cierre: '15/07/2026',
-    benefit: 'Hasta $7,2M',
-    benefitDetail: 'Cofinancia hasta 70% del proyecto. Tope $7,2M por empresa atendida. +10% si es liderada por mujer.',
-    requisitos: [
-      'Persona jurídica o natural (≥18 años)',
-      'Al menos 24 meses desde inicio de actividades',
-      'Acreditar ventas en los últimos 18 meses',
-      'Objeto social pertinente al proyecto'
-    ],
-    matches: ['Innovación', 'Gestión', 'Modernización'],
-    tip: 'Perfecto para profesionalizar la gestión del hotel: incorporar sistema de reservas, gestión de datos de ocupación, rutinas de innovación en el servicio. Encaja directo con el plan de modernización y digitalización ya trabajado. Liderado por mujer (Sra. Luz María) = +10%.',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/gestion-de-innovacion-en-pymes-2026/'
-  },
-  {
-    id: 'red-asociativa-des',
-    nombre: 'Red Asociativa Arica · Etapa Desarrollo (1ª Conv.)',
-    alcance: 'regional',
-    stripe: 'var(--gold)',
-    desc: 'Etapa de Desarrollo del instrumento "Redes": ejecuta el plan de mejoras de competitividad de forma asociativa, tras el diagnóstico. Financia mejoras en gestión, productividad e innovación.',
-    apertura: '20/05/2026',
-    cierre: '22/07/2026',
-    benefit: 'Cofinanciamiento',
-    benefitDetail: 'Cofinancia mejoras conjuntas de competitividad. Mínimo 3 empresas. Eje Turismo.',
-    requisitos: [
-      'Contribuyentes de 1ª categoría',
-      'Mínimo 3 beneficiarios asociados',
-      'Eje temático: Turismo (entre otros)',
-      'Vía Agente Operador Intermediario'
-    ],
-    matches: ['Turismo', 'Asociatividad', 'Mejoras'],
-    tip: 'Si ya existe un grupo de empresas turísticas de Putre con diagnóstico hecho, esta etapa financia las mejoras reales. Ideal para proyectos conjuntos como señalética turística de Putre, rutas del altiplano o estándares de calidad compartidos.',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/red-asociativa-arica-1-convocatoria-etapa-desarrollo-2026/'
-  },
-  {
-    id: 'red-mercados',
-    nombre: 'Red Mercados Arica · Etapa Desarrollo',
-    alcance: 'regional',
-    stripe: 'var(--gold)',
-    desc: 'Variante del instrumento "Redes" orientada a acceder a nuevos mercados de forma asociativa, mejorando gestión, productividad, sustentabilidad e innovación comercial.',
-    apertura: '20/05/2026',
-    cierre: '22/07/2026',
-    benefit: 'Cofinanciamiento',
-    benefitDetail: 'Cofinancia acceso a nuevos mercados de forma asociativa. Eje Turismo.',
-    requisitos: [
-      'Contribuyentes de 1ª categoría',
-      'Mínimo 3 beneficiarios asociados',
-      'Eje temático: Turismo',
-      'Vía Agente Operador Intermediario'
-    ],
-    matches: ['Turismo', 'Nuevos mercados', 'Comercial'],
-    tip: 'Pensado para llegar a nuevos mercados: por ejemplo, atraer turismo internacional de astronomía, trekking o cultura andina de forma conjunta con otros actores de la región. Complementa la estrategia de marketing digital del hotel.',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/red-mercados-arica-1-convocatoria-etapa-desarrollo-2026/'
-  },
-  {
-    id: 'crea-valida',
-    nombre: 'Crea y Valida',
-    alcance: 'nacional',
-    stripe: 'var(--blue)',
-    desc: 'Apoya el desarrollo de productos/servicios o procesos que requieran I+D, desde prototipo hasta validación técnica a escala productiva y/o comercial. Proyectos de mayor envergadura.',
-    apertura: '19/05/2026',
-    cierre: '04/08/2026',
-    fase1: '09/06/2026',
-    benefit: 'Hasta $180M',
-    benefitDetail: 'Cofinancia hasta 80% (micro/pequeña). Fase 1 (perfil) cerró el 09/06. Fase 2 hasta 04/08.',
-    requisitos: [
-      'Solo personas jurídicas constituidas en Chile',
-      'Al menos 24 meses desde inicio de actividades',
-      'Requiere componente real de I+D',
-      'Fase 1 (perfil) era obligatoria — cerró 09/06/2026'
-    ],
-    matches: ['I+D', 'Innovación mayor'],
-    tip: 'Fondo de gran monto pero exige I+D y la Fase 1 ya cerró para 2026. Tenerlo en el radar para 2027 con un proyecto más ambicioso (ej: desarrollo de un producto gastronómico andino propio o un servicio turístico tecnológico). Por ahora, fuera de plazo.',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/crea-y-valida-2026/'
-  },
-  {
-    id: 'red-asociativa-diag2',
-    nombre: 'Viraliza Formación · Ecosistemas Regionales',
-    alcance: 'regional',
-    stripe: 'var(--purple)',
-    desc: 'Fortalece la articulación entre actores del ecosistema de emprendimiento e innovación regional, mediante formación, transferencia de conocimientos y metodologías.',
-    apertura: '26/05/2026',
-    cierre: '23/06/2026',
-    benefit: 'Cofinanciamiento',
-    benefitDetail: 'Programas de formación en emprendimiento e innovación. Orientado a entidades formadoras.',
-    requisitos: [
-      'Orientado a entidades del ecosistema',
-      'Foco en formación y transferencia',
-      'Eje regional de innovación'
-    ],
-    matches: ['Formación', 'Ecosistema'],
-    tip: 'Más orientado a entidades formadoras que a un hotel directamente. Útil como referencia si la familia quisiera capacitarse o vincularse con la red de innovación regional. Ya cerró el 23/06.',
-    url: 'https://www.corfo.gob.cl/sites/cpp/convocatoria/viraliza-formacion-desarrollo-ecosistemas-regionales-2-2026/'
-  }
+var TODAY=new Date(2026,5,24), CLOSE=new Date(2026,5,26);
+document.getElementById('days').textContent=Math.max(0,Math.round((CLOSE-TODAY)/864e5));
+var B={total:"$52.000.000",subs:"$41.600.000",aporte:"$10.400.000",pec:"$4.400.000",val:"$6.000.000",
+  rows:[["Recursos Humanos",16600000],["Gastos de Inversión",21500000],["Gastos de Operación",11500000],["Gastos de Administración",2400000]]};
+var TOT=52000000;
+function clp(n){return "$"+n.toLocaleString('es-CL')}
+(function(){
+  var h="<tr><th>Cuenta</th><th class='r'>Subsidio (80%)</th><th class='r'>Aporte (20%)</th><th class='r'>Total</th></tr>";
+  B.rows.forEach(function(it){var n=it[0],v=it[1];var s=Math.round(v*0.8),a=v-s,w=(v/TOT*100).toFixed(0);
+    h+="<tr><td class='barcell'><div class='bg' style='width:"+w+"%'></div><span>"+n+"</span></td><td class='r'>"+clp(s)+"</td><td class='r'>"+clp(a)+"</td><td class='r'>"+clp(v)+"</td></tr>";});
+  h+="<tr class='tot'><td>TOTAL PROYECTO</td><td class='r'>"+B.subs+"</td><td class='r'>"+B.aporte+"</td><td class='r'>"+B.total+"</td></tr>";
+  document.getElementById('budtable').innerHTML=h;
+  document.getElementById('pec').textContent=B.pec;document.getElementById('val').textContent=B.val;document.getElementById('apt').textContent=B.aporte;
+})();
+var DOCS=[
+ {t:"Perfil del Proyecto",st:"ok",c:"var(--green)",d:"Presentación completa: resumen, problema, innovación, objetivos, metodología, equipo, impacto.",req:"Contenido de postulación (num. 4.6).",file:"01_Perfil_Proyecto_VicunasStellar.pdf"},
+ {t:"Presupuesto Detallado",st:"ok",c:"var(--green)",d:"Cuentas RRHH, Inversión, Operación y Administración con subsidio y aporte por ítem.",req:"Esquema de presupuesto (num. 4.6.1).",file:"02_Presupuesto_Detallado_VicunasStellar.pdf"},
+ {t:"Declaraciones Juradas + Carta Gantt",st:"ok",c:"var(--green)",d:"Anexos 1 y 3 de CORFO completados con datos de la empresa + cronograma a 12 meses.",req:"Anexos N°1 y N°3 · cronograma.",file:"03_Declaraciones_Juradas_y_CartaGantt.pdf"},
+ {t:"Carpeta Tributaria SII",st:"todo",c:"var(--dim)",d:"Descargar desde sii.cl. Acredita inicio de actividades, giro y ventas declaradas.",req:"Verificación de admisibilidad.",file:null},
+ {t:"Acreditación ventas 18 meses",st:"todo",c:"var(--dim)",d:"Respaldos de ingresos por ventas dentro de los 18 meses previos a la postulación.",req:"Requisito de admisibilidad del instrumento.",file:null},
+ {t:"Cotizaciones formales",st:"draft",c:"var(--gold)",d:"Cotizaciones de telescopios, deck, plataforma digital y equipamiento para respaldar el presupuesto (costos reales, num. 4.6.1).",req:"Respaldo de costos reales.",file:null},
+ {t:"Antecedentes legales constitución",st:"todo",c:"var(--dim)",d:"Escritura, inscripción, vigencia y personería del representante legal (num. 8.1.1).",req:"Formalización del convenio.",file:null},
+ {t:"Acreditación empresa mujer",st:"draft",c:"var(--gold)",d:"Documentación que acredita liderazgo femenino para el +10% de cofinanciamiento.",req:"Norma RE 481.",file:null}
 ];
-
-// ─────────── CHECKLIST ITEMS ───────────
-const CHECKLIST = [
-  { id: 'rpj', title: 'Registro de Persona Jurídica (RPJ) en CORFO', sub: 'Inscribir Soc. Com. UKG y CIA Ltda. en el sistema de CORFO' },
-  { id: 'carpeta', title: 'Carpeta Tributaria del SII vigente', sub: 'Con inicio de actividades, giro y ventas declaradas' },
-  { id: 'ventas', title: 'Acreditación de ventas (18-24 meses)', sub: 'Comprobantes de ingresos del período exigido' },
-  { id: 'clave', title: 'Clave Única del representante legal', sub: 'Para acceder al sistema de postulación de CORFO' },
-  { id: 'agente', title: 'Contactar Agente Operador Intermediario', sub: 'Obligatorio para los fondos de Redes' },
-  { id: 'proyecto', title: 'Descripción del proyecto a financiar', sub: 'Apoyarse en el Plan de Trabajo Integral ya elaborado' },
-  { id: 'cotiz', title: 'Cotizaciones de inversiones', sub: 'Equipos, materiales y servicios a financiar' },
-  { id: 'mujer', title: 'Acreditación "Empresa liderada por mujer"', sub: 'Para el +10% — Sra. Luz María como socia mayoritaria' }
+(function(){
+  var lab={ok:["LISTO","ok"],draft:["BORRADOR","draft"],todo:["PENDIENTE","todo"]};
+  var h="";
+  DOCS.forEach(function(d){
+    var t=lab[d.st][0],cls=lab[d.st][1];
+    var btn=d.file?"<a class='btn p' href='"+d.file+"' target='_blank'>Abrir PDF →</a>":"<span class='btn g'>Pendiente de la familia</span>";
+    h+="<div class='doc'><div class='stripe' style='background:"+d.c+"'></div><div class='bd'>"+
+       "<div class='top'><h4>"+d.t+"</h4><span class='st "+cls+"'>"+t+"</span></div>"+
+       "<p class='d'>"+d.d+"</p><div class='req'>"+d.req+"</div></div><div class='ft'>"+btn+"</div></div>";
+  });
+  document.getElementById('docgrid').innerHTML=h;
+  var done=DOCS.filter(function(d){return d.st==='ok'}).length, tot=DOCS.length, pct=Math.round(done/tot*100);
+  document.getElementById('pbar').style.width=pct+'%';
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('pdone').textContent=done+' de '+tot+' documentos listos';
+  document.getElementById('ptot').textContent=(tot-done)+' por completar';
+})();
+var GANTT=[
+ ["R1 · Diseño técnico del deck astronómico",[1,1,0,0,0,0,0,0,0,0,0,0]],
+ ["R1 · Habilitación estructura y climatización",[0,1,1,1,0,0,0,0,0,0,0,0]],
+ ["R1 · Adquisición e instalación de telescopios",[0,0,1,1,1,0,0,0,0,0,0,0]],
+ ["R2 · Diseño de guiones experienciales",[0,1,1,0,0,0,0,0,0,0,0,0]],
+ ["R2 · Prototipado con grupos piloto",[0,0,0,1,1,1,0,0,0,0,0,0]],
+ ["R3 · Plataforma digital de reservas",[0,1,1,1,1,0,0,0,0,0,0,0]],
+ ["R3 · Integración OTAs y analítica",[0,0,0,0,1,1,1,0,0,0,0,0]],
+ ["R4 · Capacitación del equipo",[0,0,1,1,0,0,0,0,0,0,0,0]],
+ ["R4 · Contratación guía-anfitrión",[0,0,0,1,1,0,0,0,0,0,0,0]],
+ ["R4 · Certificación de calidad",[0,0,0,0,0,1,1,1,0,0,0,0]],
+ ["R5 · Operación piloto y validación",[0,0,0,0,0,1,1,1,1,1,1,0]],
+ ["R5 · Campañas, fam trips y medición",[0,0,0,0,0,0,1,1,1,1,1,0]],
+ ["Gestión, control y rendiciones",[1,1,1,1,1,1,1,1,1,1,1,1]],
+ ["Informe final y cierre",[0,0,0,0,0,0,0,0,0,0,1,1]]
 ];
-
-// ─────────── RENDER ───────────
-function parseDate(str) {
-  const [d, m, y] = str.split('/').map(Number);
-  return new Date(y, m - 1, d);
-}
-function daysBetween(a, b) {
-  return Math.round((b - a) / (1000 * 60 * 60 * 24));
-}
-function fmtShort(str) {
-  const [d, m] = str.split('/');
-  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-  return d + ' ' + meses[Number(m) - 1];
-}
-
-function getStatus(fund) {
-  const cierre = parseDate(fund.cierre);
-  const apertura = parseDate(fund.apertura);
-  const daysToClose = daysBetween(TODAY, cierre);
-  const daysToOpen = daysBetween(TODAY, apertura);
-
-  if (daysToClose < 0) return { key: 'closed', label: 'Cerrada', cd: 'Postulación cerrada', cdClass: 'cd-closed', urgClass: 'urg-closed', postulable: false };
-  if (daysToOpen > 0) return { key: 'future', label: 'Próxima', cd: 'Abre en ' + daysToOpen + ' días', cdClass: 'cd-future', urgClass: 'urg-future', postulable: false };
-  if (daysToClose <= 5) return { key: 'critical', label: '¡Cierra ya!', cd: 'Cierra en ' + daysToClose + (daysToClose === 1 ? ' día' : ' días'), cdClass: 'cd-urgent', urgClass: 'urg-critical', postulable: true };
-  if (daysToClose <= 20) return { key: 'soon', label: 'Cierra pronto', cd: 'Cierra en ' + daysToClose + ' días', cdClass: 'cd-soon', urgClass: 'urg-soon', postulable: true };
-  return { key: 'open', label: 'Abierta', cd: 'Quedan ' + daysToClose + ' días', cdClass: 'cd-ok', urgClass: 'urg-open', postulable: true };
-}
-
-function cardHTML(fund) {
-  const st = getStatus(fund);
-  const tagClass = fund.alcance === 'regional' ? 'tag-regional' : 'tag-nacional';
-  const tagLabel = fund.alcance === 'regional' ? 'Regional Arica' : 'Todo Chile';
-  const closedClass = st.key === 'closed' ? ' closed' : '';
-  const matches = fund.matches.map(m => `<span class="match">${m}</span>`).join('');
-  const reqs = fund.requisitos.map(r => `<li>${r}</li>`).join('');
-
-  const btn = st.postulable
-    ? `<a href="${fund.url}" target="_blank" class="btn btn-primary">Ver convocatoria y postular →</a>`
-    : st.key === 'future'
-      ? `<a href="${fund.url}" target="_blank" class="btn btn-primary" style="background:var(--purple)">Ver detalles (abre pronto) →</a>`
-      : `<a href="${fund.url}" target="_blank" class="btn btn-disabled">Convocatoria cerrada</a>`;
-
-  return `
-  <article class="card${closedClass}" data-alcance="${fund.alcance}" data-status="${st.key}">
-    <div class="card-stripe" style="background:${fund.stripe}"></div>
-    <div class="card-body">
-      <div class="card-top">
-        <div class="card-tags">
-          <span class="tag ${tagClass}">${tagLabel}</span>
-        </div>
-        <span class="urgency ${st.urgClass}">${st.label}</span>
-      </div>
-      <h3>${fund.nombre}</h3>
-      <p class="card-desc">${fund.desc}</p>
-
-      <div class="card-dates">
-        <div class="date-box">
-          <div class="date-lbl">Apertura</div>
-          <div class="date-val">${fmtShort(fund.apertura)}</div>
-        </div>
-        <div class="date-box">
-          <div class="date-lbl">Cierre</div>
-          <div class="date-val">${fmtShort(fund.cierre)}</div>
-        </div>
-      </div>
-
-      <div class="countdown ${st.cdClass}">${st.cd}</div>
-
-      <div class="card-benefit">
-        <span class="benefit-amount">${fund.benefit}</span>
-        <span class="benefit-detail">${fund.benefitDetail}</span>
-      </div>
-
-      <div class="match-badges">${matches}</div>
-
-      <div class="card-section">
-        <div class="card-section-title">Requisitos clave</div>
-        <ul class="req-list">${reqs}</ul>
-      </div>
-    </div>
-
-    <div class="tip-box">
-      <div class="tip-box-title">💡 Tip para el Hotel Las Vicuñas</div>
-      <div class="tip-box-text">${fund.tip}</div>
-    </div>
-
-    <div class="card-footer">${btn}</div>
-  </article>`;
-}
-
-// Sort: postulables primero por días a cierre, luego futuras, luego cerradas
-function sortFunds(a, b) {
-  const sa = getStatus(a), sb = getStatus(b);
-  const order = { critical: 0, soon: 1, open: 2, future: 3, closed: 4 };
-  if (order[sa.key] !== order[sb.key]) return order[sa.key] - order[sb.key];
-  return parseDate(a.cierre) - parseDate(b.cierre);
-}
-
-const grid = document.getElementById('grid');
-const sorted = [...FUNDS].sort(sortFunds);
-grid.innerHTML = sorted.map(cardHTML).join('');
-
-// Open count
-const openCount = FUNDS.filter(f => getStatus(f).postulable).length;
-document.getElementById('open-count').textContent = openCount;
-
-// ─────────── FILTERS ───────────
-document.querySelectorAll('.chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    const f = chip.dataset.filter;
-    document.querySelectorAll('.card').forEach(card => {
-      const alc = card.dataset.alcance;
-      const st = card.dataset.status;
-      let show = true;
-      if (f === 'regional') show = alc === 'regional';
-      else if (f === 'nacional') show = alc === 'nacional';
-      else if (f === 'critical') show = (st === 'critical' || st === 'soon');
-      else if (f === 'open') show = (st === 'critical' || st === 'soon' || st === 'open');
-      card.classList.toggle('hidden', !show);
-    });
+(function(){
+  var h="<tr><th class='a' style='text-align:left'>Actividad</th>";
+  for(var m=1;m<=12;m++){h+="<th>M"+m+"</th>";}
+  h+="</tr>";
+  GANTT.forEach(function(row){
+    h+="<tr><td class='a'>"+row[0]+"</td>";
+    row[1].forEach(function(c){h+="<td class='"+(c?'on':'')+"'></td>";});
+    h+="</tr>";
   });
-});
-
-// ─────────── CHECKLIST (persist in localStorage-like via memory) ───────────
-const checklistEl = document.getElementById('checklist');
-let checkState = {};
-try {
-  const saved = window.name && window.name.startsWith('lv_') ? JSON.parse(window.name.slice(3)) : {};
-  checkState = saved || {};
-} catch(e) { checkState = {}; }
-
-function renderChecklist() {
-  checklistEl.innerHTML = CHECKLIST.map(item => `
-    <div class="check-item ${checkState[item.id] ? 'done' : ''}" data-id="${item.id}">
-      <div class="check-box">${checkState[item.id] ? '✓' : ''}</div>
-      <div class="check-text"><strong>${item.title}</strong><span>${item.sub}</span></div>
-    </div>
-  `).join('');
-  document.querySelectorAll('.check-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const id = el.dataset.id;
-      checkState[id] = !checkState[id];
-      try { window.name = 'lv_' + JSON.stringify(checkState); } catch(e) {}
-      renderChecklist();
-    });
-  });
-}
-renderChecklist();
+  document.getElementById('gtable').innerHTML=h;
+})();
+var CK=[
+ "Persona jurídica chilena vigente (Soc. Com. UKG y CIA Ltda.)",
+ "≥ 18 meses desde el inicio de actividades en 1ª categoría",
+ "Ventas demostrables en los últimos 18 meses",
+ "Domicilio / ejecución del proyecto en la Región de Arica y Parinacota",
+ "Sin medidas del DL 211 que impidan contratar con el Estado",
+ "Representante legal con Clave Única para el sistema CORFO",
+ "Eje temático del proyecto = Turismo",
+ "Acreditación de empresa liderada por mujer (+10%)"
+];
+(function(){
+  var ul=document.getElementById('ck');var st={};
+  try{st=window.name&&window.name.indexOf('vs_')===0?JSON.parse(window.name.slice(3)):{}}catch(e){st={}}
+  function render(){ul.innerHTML=CK.map(function(t,i){return "<li class='"+(st[i]?'done':'')+"' data-i='"+i+"'><span class='bx'>"+(st[i]?'✓':'')+"</span><span class='tx'>"+t+"</span></li>"}).join('');
+    ul.querySelectorAll('li').forEach(function(li){li.onclick=function(){var i=li.dataset.i;st[i]=!st[i];try{window.name='vs_'+JSON.stringify(st)}catch(e){}render()}})}
+  render();
+})();
+document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+  document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});
+  t.classList.add('on');document.getElementById(t.dataset.p).classList.add('on');
+}});
 </script>
-
 </body>
 </html>
